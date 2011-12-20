@@ -12,7 +12,7 @@ Ext4.define('GeoExt.PrickerWindow', {
         { 
             xtype: 'combo',
             fieldLabel: 'Choose attr',
-            store: this.attrComboStore,
+            store: this.kindComboStore,
             queryMode: 'local',
             displayField: 'name',
             valueField: 'abbr'
@@ -34,7 +34,7 @@ Ext4.define('GeoExt.PrickerWindow', {
             data: []
         })
 
-        this.attrComboStore = Ext4.create('Ext.data.Store', {
+        this.kindComboStore = Ext4.create('Ext.data.Store', {
             fields: ['abbr', 'name'],
             data : [
                 {id:"temperature", name:"Temperature", fieldsList: ['data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7'] },
@@ -101,12 +101,15 @@ Ext4.define('GeoExt.PrickerWindow', {
                         }
                     }]
             }
+            //TODO
             /* ,line: ... */
             /* ,column: ... */
             /* ... */
         }
 
         this.callParent(arguments)
+
+        //TODO add chartKindState, chartTypeState
 
         this.setChart('area')
 
