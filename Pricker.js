@@ -28,7 +28,9 @@ GeoExt.Pricker = (function() {
     }
 
     Pricker.prototype.show_char = function(json) {
-        this.prickerWindow.loadData(json)
+        FieldStore.add({id:"data1", name:"Temperature" }, {id:"data2", name:"Humidity" }, {id:"data3", name:"Pressure" })
+        TypeStore.add({id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" })
+        ChartStore.loadData(json)
         this.prickerWindow.show()
     }
 
