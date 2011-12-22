@@ -7,49 +7,44 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,title: 'Area Chart'
     ,renderTo: Ext4.getBody()
     ,layout: 'fit'
-
-    ,initComponent: function() {
-        this.callParent(arguments)
-        this.chartType = 'area'
-        this.chartField1 = 'name'
-        this.chartField2 = 'data1'
-        this.setChart()
-
-        this.addDocked(Ext4.create('Ext.form.ComboBox', {
+    ,tbar:[
+            {xtype: 'combo',
                 fieldLabel: 'Choose X field'
                 ,store: FieldStore
                 ,queryMode: 'local'
                 ,displayField: 'name'
                 ,valueField: 'id'
-                ,listeners: {
-                         scope: this
-                        ,select: this.xFieldSelect
-                    }
-            }),'top')
-        this.addDocked(Ext4.create('Ext.form.ComboBox', {
+                }
+            ,{xtype: 'combo',
                 fieldLabel: 'Choose Y field'
                 ,store: FieldStore
                 ,queryMode: 'local'
                 ,displayField: 'name'
                 ,valueField: 'id'
-                ,listeners: {
-                         scope: this
-                        ,select: this.yFieldSelect
-                    }
-            }),'top')
-        this.addDocked(Ext4.create('Ext.form.ComboBox', {
+                }
+            ,{xtype: 'combo',
                 fieldLabel: 'Choose type'
                 ,store: TypeStore
                 ,queryMode: 'local'
                 ,displayField: 'name'
                 ,valueField: 'id'
-                ,listeners: {
-                         scope: this
-                        ,select: this.typeSelect
-                    }
-            }),'top')
+                }
+        ]
 
-    }
+    ,initComponent: function() {
+            this.callParent(arguments)
+            this.chartType = 'area'
+            this.chartField1 = 'name'
+            this.chartField2 = 'data1'
+            this.setChart()
+
+            for(var i=0; i<3; i++) {
+                    var comp = this.getDockedComponent(0).items.get(i)
+                    if (comp.fieldLabel == 'Choose X field' ) comp.on('select', this.xFieldSelect, this )
+                    if (comp.fieldLabel == 'Choose Y field' ) comp.on('select', this.yFieldSelect, this )
+                    if (comp.fieldLabel == 'Choose type' ) comp.on('select', this.typeSelect, this )
+                }
+        }
 
     ,chartAxes: function(type,field1,field2){
         return [{

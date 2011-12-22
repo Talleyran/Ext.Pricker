@@ -1,4 +1,5 @@
 Ext4.onReady(function() {
+
     var options = {
         projection: new OpenLayers.Projection("EPSG:900913"),
         units: "m",
