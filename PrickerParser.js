@@ -1,8 +1,10 @@
 GeoExt.PrickerParser = (function() {
 
-    function PrickerParser(func,context) {
-        this.func = func
-        if(context==undefined) this.context=this; else this.context = context
+    function PrickerParser() { }
+
+    PrickerParser.prototype.doOnParce = function(func, context) {
+        this.onParceFunc = func
+        this.onParceContext = ( context == undefined ? this : context )
     }
 
     PrickerParser.prototype.get = function(url) {
@@ -37,11 +39,8 @@ GeoExt.PrickerParser = (function() {
 
     PrickerParser.prototype.parse = function(respond) {
         //parcing..
-        this.onParse(generateData())
-    }
-
-    PrickerParser.prototype.onParse = function(json) {
-        this.func.call(this.context, json)
+        var json = generateData()
+        this.onParceFunc.call(this.onParceContext, json)
     }
 
     return PrickerParser

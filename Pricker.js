@@ -21,7 +21,8 @@ GeoExt.Pricker = (function() {
         this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
         this.mark = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0),null,style_mark)
 
-        this.prickerParser = new GeoExt.PrickerParser(this.show_char, this)
+        this.prickerParser = new GeoExt.PrickerParser()
+        this.prickerParser.doOnParce(this.show_char, this)
         this.activate()
 
         this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow')
