@@ -8,7 +8,7 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,renderTo: Ext4.getBody()
     ,layout: 'fit'
     ,tbar:[
-            {xtype: 'combo',
+             {xtype: 'combo',
                 fieldLabel: 'Choose X field'
                 ,store: FieldStore
                 ,queryMode: 'local'
@@ -34,8 +34,8 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,initComponent: function() {
             this.callParent(arguments)
             this.chartType = 'area'
-            this.chartField1 = 'name'
-            this.chartField2 = 'data1'
+            //this.chartField1 = FieldStore.fields[0]
+            //this.chartField2 = FieldStore.fields[1]
             this.setChart()
 
             for(var i=0; i<3; i++) {
