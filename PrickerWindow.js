@@ -34,10 +34,14 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,initComponent: function() {
             this.callParent(arguments)
             this.chartType = 'area'
-            this.setChart()
             this.getDockedComponent(0).items.get(0).on('select', this.xFieldSelect, this )
             this.getDockedComponent(0).items.get(1).on('select', this.yFieldSelect, this )
             this.getDockedComponent(0).items.get(2).on('select', this.typeSelect, this )
+        }
+
+    ,show: function() {
+            this.setChart()
+            this.callParent(arguments)
         }
 
     ,chartAxes: function(type,field1,field2){

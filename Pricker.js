@@ -36,7 +36,6 @@ GeoExt.Pricker = (function() {
         ChartStore.loadData(json.data)
         this.prickerWindow.chartField1 = json.fields[0]
         this.prickerWindow.chartField2 = json.fields[1]
-        this.prickerWindow.setChart()
         this.prickerWindow.show()
     }
 
