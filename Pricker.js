@@ -2,9 +2,16 @@ GeoExt.Pricker = (function() {
 
     function Pricker(options) {
 
-        this.map = options['map']
+        this.map = options.map
+
+        this.format = 'text/plain'
+        if(options.format != undefined) this.format = options.format
+
+        this.featureCount = 5
+        if(options.featureCount != undefined) this.featureCount = options.featureCount
 
         this.layers = []
+        if(options.layers != undefined) this.layers = options.layers
 
         this.handlerOptions = {
                   'single': true,
@@ -48,8 +55,48 @@ GeoExt.Pricker = (function() {
     }
 
     Pricker.prototype.prick = function(e) {
-        var lonlat = this.map.getLonLatFromViewPortPx(e.xy)
-        this.prickerParser.get(this.urlByLayers(lonlat))
+            var queryLayers = []
+            Ext4.Array.each(this.layers, function(el,i){
+                    queryLayers.push(el.params.LAYERS)
+                })
+
+        var params = {
+            REQUEST: "GetFeatureInfo",
+            //EXCEPTIONS: "application/vnd.ogc.se_xml",
+            BBOX: this.map.getExtent().toBBOX(),
+            SERVICE: "WMS",
+            VERSION: "1.1.1",
+            X: e.xy.x,
+            Y: e.xy.y,
+            INFO_FORMAT: this.format,
+            QUERY_LAYERS: queryLayers.join(','),
+            LAYERS: queryLayers.join(','),
+            FEATURE_COUNT: this.featureCount,
+            //Styles: '',
+            WIDTH: this.map.size.w,
+            HEIGHT: this.map.size.h,
+            //format: this.format,
+            srs: this.map.layers[0].params.SRS}
+
+        Ext4.Ajax.request({
+                 method: 'get'
+                ,url: '/wms'
+                ,params: params
+                ,scope: this
+                ,success: function(response){
+                        this.prickerParser.parse(response.responseText)
+                    }
+                ,failure: function(er){
+                        console.log( er )
+                    }
+            })
+
+        //OpenLayers.loadURL("http://localhost:8080/geoserver/nipi_st/wms", params, this, setHTML, setHTML);
+        //OpenLayers.Event.stop(e);
+
+
+        //var lonlat = this.map.getLonLatFromViewPortPx(e.xy)
+        //this.prickerParser.get(this.urlByLayers(lonlat))
     }
 
     Pricker.prototype.addLayer = function(layer) {

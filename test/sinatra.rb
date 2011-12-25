@@ -4,7 +4,7 @@ require 'net/http'
 set :public_folder, File.dirname(__FILE__) + '/../../'
 
 get '/' do
-    redirect to 'Ext.Pricker/example.html'
+    File.open(File.join(settings.public_folder, 'Ext.Pricker/example.html')).read
 end
 
 get '/translate?*' do
@@ -12,5 +12,6 @@ get '/translate?*' do
 end
 
 get '/wms?*' do
-    Net::HTTP.get('oceanviewer.ru', "/resources/ru_hydrometcentre_42/wms?#{params}")
+    File.open(File.join(settings.public_folder, 'Ext.Pricker/test/geoserver-GetFeatureInfo.plain')).read
+    #Net::HTTP.get('oceanviewer.ru', "/resources/ru_hydrometcentre_42/wms?#{params.map{|k,v|"#{k}=#{v}"}.join('&')}")
 end
