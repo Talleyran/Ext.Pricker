@@ -29,13 +29,13 @@ GeoExt.Pricker = (function() {
     }
 
     Pricker.prototype.show_char = function(json) {
-        for (var i=0; i< json.fields.length; i++) FieldStore.add ({id:json.fields[i], name:json.fields[i]})
-        //FieldStore.add({id:"data1", name:"Temperature" }, {id:"data2", name:"Humidity" }, {id:"data3", name:"Pressure" })
-        TypeStore.add({id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" })
-        ChartStore = Ext4.create('Ext.data.JsonStore', { fields: json.fields } )
+        FieldStoreX.loadData(json.fieldsXData)
+        FieldStoreY.loadData(json.fieldsYData)
+        TypeStore.loadData([ {id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" } ])
+        ChartStore = Ext4.create('Ext.data.JsonStore', { fields: json.allFields } )
         ChartStore.loadData(json.data)
-        this.prickerWindow.chartField1 = json.fields[0]
-        this.prickerWindow.chartField2 = json.fields[1]
+        this.prickerWindow.chartField1 = json.fieldsXData[0].id
+        this.prickerWindow.chartField2 = json.fieldsYData[0].id
         this.prickerWindow.show()
     }
 

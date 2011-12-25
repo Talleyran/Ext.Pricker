@@ -10,14 +10,14 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,tbar:[
              {xtype: 'combo',
                 fieldLabel: 'Choose X field'
-                ,store: FieldStore
+                ,store: FieldStoreX
                 ,queryMode: 'local'
                 ,displayField: 'name'
                 ,valueField: 'id'
                 }
             ,{xtype: 'combo',
                 fieldLabel: 'Choose Y field'
-                ,store: FieldStore
+                ,store: FieldStoreY
                 ,queryMode: 'local'
                 ,displayField: 'name'
                 ,valueField: 'id'
