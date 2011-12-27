@@ -3,10 +3,13 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,width: 800
     ,height: 400
     ,shadow: false
-    //,maximizable: true
+    ,maximizable: true
     ,title: 'Area Chart'
+    ,chartAliases: {}
     ,renderTo: Ext4.getBody()
     ,layout: 'fit'
+    ,chartField1: ''
+    ,chartField2: ''
     ,tbar:[
              {xtype: 'combo',
                 fieldLabel: 'Choose X field'
@@ -45,35 +48,38 @@ Ext4.define('GeoExt.PrickerWindow', {
         }
 
     ,chartAxes: function(type,field1,field2){
-        return [{
-                     type: 'Numeric'
+        var title1 = 'X'
+        if(this.chartAliases[field1]) title1=this.chartAliases[field1]
+        var title2 = 'Y'
+        if(this.chartAliases[field2]) title2=this.chartAliases[field2]
+
+        var axisType1 = 'Category'
+        if(this.fieldsAxisType[field1]) axisType1=this.fieldsAxisType[field1]
+        var axisType2 = 'Numeric'
+        if(this.fieldsAxisType[field2]) axisType2=this.fieldsAxisType[field2]
+
+        return [
+                {
+                     type: axisType1
+                    ,position: 'bottom'
+                    ,fields: [field1]
+                    ,title: title1
+                    ,grid: true
+                    ,dateFormat: 'M d'
+                    ,label: {
+                            rotate: {
+                                    degrees: 315
+                                }
+                        }
+                }
+                ,{
+                     type: axisType2
                     ,grid: true
                     ,position: 'left'
                     ,fields: [field2]
-                    ,title: 'Field Name' //TODO get aliase name for field
-                    ,grid: {
-                            odd: {
-                                opacity: 1,
-                                fill: '#ddd',
-                                stroke: '#bbb',
-                                'stroke-width': 1
-                            }
-                        }
-                    }
-                ,{
-                     type: 'Category'
-                    ,position: 'bottom'
-                    ,fields: [field1]
-                    ,title: 'Field Name' //TODO get aliase name for field
-                    ,grid: true
-                    ,label: {
-                            rotate: {
-                                degrees: 315
-                            }
-                        }
-                    }
-                ]
-
+                    ,title: title2
+                }
+            ]
         }
 
     ,chartSeries: function(type,field1,field2){
@@ -94,9 +100,6 @@ Ext4.define('GeoExt.PrickerWindow', {
                      style: 'background:#fff'
                     ,animate: true
                     ,store: ChartStore
-                    ,legend: {
-                            position: 'bottom'
-                        }
                     ,axes: this.chartAxes(type,field1,field2)
                     ,series: this.chartSeries(type,field1,field2)
                 }

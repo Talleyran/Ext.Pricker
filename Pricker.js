@@ -38,7 +38,6 @@ GeoExt.Pricker = (function() {
         this.activate()
 
     }
-
     Pricker.prototype.show_char = function(json) {
         if ( this.prickerWindow ) this.prickerWindow.destroy()
         this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow')
@@ -49,6 +48,8 @@ GeoExt.Pricker = (function() {
         ChartStore.loadData(json.data)
         this.prickerWindow.chartField1 = json.fieldsXData[0].id
         this.prickerWindow.chartField2 = json.fieldsYData[0].id
+        this.prickerWindow.chartAliases = json.aliases
+        this.prickerWindow.fieldsAxisType = json.fieldsAxisType
         this.prickerWindow.show()
     }
 
@@ -97,13 +98,7 @@ GeoExt.Pricker = (function() {
                     }
             })
 
-        //OpenLayers.loadURL("http://localhost:8080/geoserver/nipi_st/wms", params, this, setHTML, setHTML);
-        //OpenLayers.Event.stop(e);
-
-
-        //var lonlat = this.map.getLonLatFromViewPortPx(e.xy)
-        //this.prickerParser.get(this.urlByLayers(lonlat))
-    }
+        }
 
     Pricker.prototype.addLayer = function(layer) {
         this.layers.push(layer)
