@@ -23,9 +23,18 @@ Ext4.onReady(function() {
 
     var pricker = new GeoExt.Pricker({
          map: map
-        ,layers: [l1,l2]
+        ,layers: [l1,l2] //adding layers
         ,aliaseUrl: '/translate'
         ,getInfoUrl: '/wms'
+        ,nameTitleAlias: 'назв.слоя'
+        ,chartOptions: {
+                title: 'Графики'
+                ,fieldComboName1: 'В-те знач. по X'
+                //,fieldComboName2...
+                //,typeComboName...
+                //,defaultAxisTitle1...
+                //,defaultAxisTitle2...
+            }
     })
 
     map.setCenter((new OpenLayers.LonLat(0, 0)).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),1)

@@ -4,6 +4,8 @@ GeoExt.Pricker = (function() {
 
         this.map = options.map
 
+        this.chartOptions = options.chartOptions
+
         this.format = 'text/plain'
         if(options.format != undefined) this.format = options.format
 
@@ -15,8 +17,6 @@ GeoExt.Pricker = (function() {
 
         this.getInfoUrl = '/'
         if(options.getInfoUrl != undefined) this.getInfoUrl = options.getInfoUrl
-
-        this.aliaseUrl = options.aliaseUrl
 
         this.handlerOptions = {
                   'single': true,
@@ -33,23 +33,25 @@ GeoExt.Pricker = (function() {
         this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
         this.mark = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0),null,style_mark)
 
-        this.prickerParser = new GeoExt.PrickerParser(this.aliaseUrl)
+        this.prickerParser = new GeoExt.PrickerParser(options.aliaseUrl, options.nameTitleAlias)
         this.prickerParser.doOnParce(this.show_char, this)
         this.activate()
 
     }
     Pricker.prototype.show_char = function(json) {
         if ( this.prickerWindow ) this.prickerWindow.destroy()
-        this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow')
+        this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow', Ext4.Object.merge({
+                 chartField1: json.fieldsXData[0].id
+                ,chartField2: json.fieldsYData[0].id
+                ,chartAliases: json.aliases
+                ,fieldsAxisType: json.fieldsAxisType
+            },this.chartOptions))
+
         FieldStoreX.loadData(json.fieldsXData)
         FieldStoreY.loadData(json.fieldsYData)
         TypeStore.loadData([ {id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" } ])
         ChartStore = Ext4.create('Ext.data.JsonStore', { fields: json.allFields } )
         ChartStore.loadData(json.data)
-        this.prickerWindow.chartField1 = json.fieldsXData[0].id
-        this.prickerWindow.chartField2 = json.fieldsYData[0].id
-        this.prickerWindow.chartAliases = json.aliases
-        this.prickerWindow.fieldsAxisType = json.fieldsAxisType
         this.prickerWindow.show()
     }
 

@@ -1,9 +1,13 @@
 //TODO extend from extjs observer 
 GeoExt.PrickerParser = (function() {
 
-    function PrickerParser(aliaseUrl) {
+    function PrickerParser(aliaseUrl, nameTitleAlias) {
             this.aliaseUrl = '/'
             if(aliaseUrl != undefined) this.aliaseUrl = aliaseUrl
+
+            this.nameTitleAlias = 'name'
+            if(nameTitleAlias != undefined) this.nameTitleAlias = nameTitleAlias
+
         }
 
     PrickerParser.prototype.doOnParce = function(func, context) {
@@ -22,10 +26,9 @@ GeoExt.PrickerParser = (function() {
             ,allFields = []
             ,fieldsXData = []
             ,fieldsYData = []
-            ,nameAlias = 'назв.слоя'
             ,fieldsAxisType = {}
 
-        fieldsXData.push({id:'name', name: nameAlias})
+        fieldsXData.push({id:'name', name: this.nameTitleAlias})
 
         var t = respond.split("--------------------------------------------\n")
         console.log(t)
@@ -74,16 +77,16 @@ GeoExt.PrickerParser = (function() {
                 ,params: {code: allFields.join(','), type: 'field'}
                 ,scope: this
                 ,success: function(response){
-                        var aliases = Ext4.Object.merge(Ext4.decode(response.responseText), {name: nameAlias})
+                        var aliases = Ext4.Object.merge(Ext4.decode(response.responseText), {name: this.nameTitleAlias})
                         Ext4.Array.each(fieldsX,function(el,i){
-                                var temp_name = el
-                                if(aliases[el])temp_name = aliases[el]
-                                fieldsXData.push({id: el, name: temp_name})
+                                var tempName = el
+                                if(aliases[el])tempName = aliases[el]
+                                fieldsXData.push({id: el, name: tempName})
                             })
                         Ext4.Array.each(fieldsY,function(el,i){
-                                var temp_name = el
-                                if(aliases[el])temp_name = aliases[el]
-                                fieldsYData.push({id: el, name: temp_name})
+                                var tempName = el
+                                if(aliases[el])tempName = aliases[el]
+                                fieldsYData.push({id: el, name: tempName})
                             })
 
                         this.onParceFunc.call(this.onParceContext, { 
