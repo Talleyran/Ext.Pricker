@@ -10,24 +10,27 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,layout: 'fit'
     ,chartField1: ''
     ,chartField2: ''
+    ,defaultAxisTitle1: 'X'
+    ,defaultAxisTitle2: 'Y'
+    ,fieldComboName1: 'Choose X field'
+    ,fieldComboName2: 'Choose Y field'
+    ,typeComboName: 'Choose type'
+    ,chartType: 'area'
     ,tbar:[
              {xtype: 'combo',
-                fieldLabel: 'Choose X field'
-                ,store: FieldStoreX
+                 store: FieldStoreX
                 ,queryMode: 'local'
                 ,displayField: 'name'
                 ,valueField: 'id'
                 }
             ,{xtype: 'combo',
-                fieldLabel: 'Choose Y field'
-                ,store: FieldStoreY
+                 store: FieldStoreY
                 ,queryMode: 'local'
                 ,displayField: 'name'
                 ,valueField: 'id'
                 }
             ,{xtype: 'combo',
-                fieldLabel: 'Choose type'
-                ,store: TypeStore
+                 store: TypeStore
                 ,queryMode: 'local'
                 ,displayField: 'name'
                 ,valueField: 'id'
@@ -36,10 +39,12 @@ Ext4.define('GeoExt.PrickerWindow', {
 
     ,initComponent: function() {
             this.callParent(arguments)
-            this.chartType = 'area'
             this.getDockedComponent(0).items.get(0).on('select', this.xFieldSelect, this )
+            this.getDockedComponent(0).items.get(0).fieldLabel = this.fieldComboName1
             this.getDockedComponent(0).items.get(1).on('select', this.yFieldSelect, this )
+            this.getDockedComponent(0).items.get(1).fieldLabel = this.fieldComboName2
             this.getDockedComponent(0).items.get(2).on('select', this.typeSelect, this )
+            this.getDockedComponent(0).items.get(2).fieldLabel = this.typeComboName
         }
 
     ,show: function() {
@@ -48,9 +53,9 @@ Ext4.define('GeoExt.PrickerWindow', {
         }
 
     ,chartAxes: function(type,field1,field2){
-        var title1 = 'X'
+        var title1 = this.defaultAxisTitle1
         if(this.chartAliases[field1]) title1=this.chartAliases[field1]
-        var title2 = 'Y'
+        var title2 = this.defaultAxisTitle2
         if(this.chartAliases[field2]) title2=this.chartAliases[field2]
 
         var axisType1 = 'Category'
