@@ -1,7 +1,10 @@
 //TODO extend from extjs observer 
 GeoExt.PrickerParser = (function() {
 
-    function PrickerParser() { }
+    function PrickerParser(aliaseUrl) {
+            this.aliaseUrl = '/'
+            if(aliaseUrl != undefined) this.aliaseUrl = aliaseUrl
+        }
 
     PrickerParser.prototype.doOnParce = function(func, context) {
         this.onParceFunc = func
@@ -56,7 +59,7 @@ GeoExt.PrickerParser = (function() {
 
         Ext4.Ajax.request({
                  method: 'get'
-                ,url: '/translate'
+                ,url: this.aliaseUrl
                 ,params: {code: allFields.join(','), type: 'field'}
                 ,scope: this
                 ,success: function(response){
@@ -81,7 +84,7 @@ GeoExt.PrickerParser = (function() {
           //fields: fields
           //,proxy: new Ext.data.HttpProxy({
                 //method: 'GET',
-                //url: '/translate'
+                //url: this.aliaseUrl
             //})
           //,listeners: {
             //load: messagesLoaded

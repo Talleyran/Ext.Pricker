@@ -8,10 +8,16 @@ get '/' do
 end
 
 get '/translate?*' do
+    puts '----------------------------'
+    p params
+    puts '----------------------------'
     Net::HTTP.get('oceanviewer.ru', "/OceanViewer2/translate?code=#{params[:code]}&type=#{params[:type]}")
 end
 
 get '/wms?*' do
+    puts '----------------------------'
+    p params
+    puts '----------------------------'
     File.open(File.join(settings.public_folder, 'Ext.Pricker/test/geoserver-GetFeatureInfo.plain')).read
     #Net::HTTP.get('oceanviewer.ru', "/resources/ru_hydrometcentre_42/wms?#{params.map{|k,v|"#{k}=#{v}"}.join('&')}")
 end

@@ -13,6 +13,11 @@ GeoExt.Pricker = (function() {
         this.layers = []
         if(options.layers != undefined) this.layers = options.layers
 
+        this.getInfoUrl = '/'
+        if(options.getInfoUrl != undefined) this.getInfoUrl = options.getInfoUrl
+
+        this.aliaseUrl = options.aliaseUrl
+
         this.handlerOptions = {
                   'single': true,
                   'double': false,
@@ -28,7 +33,7 @@ GeoExt.Pricker = (function() {
         this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
         this.mark = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0),null,style_mark)
 
-        this.prickerParser = new GeoExt.PrickerParser()
+        this.prickerParser = new GeoExt.PrickerParser(this.aliaseUrl)
         this.prickerParser.doOnParce(this.show_char, this)
         this.activate()
 
@@ -80,7 +85,7 @@ GeoExt.Pricker = (function() {
 
         Ext4.Ajax.request({
                  method: 'get'
-                ,url: '/wms'
+                ,url: this.getInfoUrl
                 ,params: params
                 ,scope: this
                 ,success: function(response){

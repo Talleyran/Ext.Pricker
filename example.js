@@ -22,15 +22,11 @@ Ext4.onReady(function() {
     map.addControl(new OpenLayers.Control.LayerSwitcher())
 
     var pricker = new GeoExt.Pricker({
-         title: 'Overview Map'
-        ,closable:true
-        ,width:200
-        ,height:200
-        ,map: map
-        ,layers: [l1]
+         map: map
+        ,layers: [l1,l2]
+        ,aliaseUrl: '/translate'
+        ,getInfoUrl: '/wms'
     })
-
-    pricker.addLayer(l1)
 
     map.setCenter((new OpenLayers.LonLat(0, 0)).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),1)
 
