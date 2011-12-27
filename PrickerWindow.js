@@ -46,35 +46,35 @@ Ext4.define('GeoExt.PrickerWindow', {
 
     ,chartAxes: function(type,field1,field2){
         return [{
-             type: 'Numeric'
-            ,grid: true
-            ,position: 'left'
-            ,fields: [field2]
-            ,title: 'Field Name' //TODO get aliase name for field
-            ,grid: {
-                    odd: {
-                        opacity: 1,
-                        fill: '#ddd',
-                        stroke: '#bbb',
-                        'stroke-width': 1
+                     type: 'Numeric'
+                    ,grid: true
+                    ,position: 'left'
+                    ,fields: [field2]
+                    ,title: 'Field Name' //TODO get aliase name for field
+                    ,grid: {
+                            odd: {
+                                opacity: 1,
+                                fill: '#ddd',
+                                stroke: '#bbb',
+                                'stroke-width': 1
+                            }
+                        }
                     }
-                }
-            ,minimum: 0
-            ,adjustMinimumByMajorUnit: 0
-        }, {
-             type: 'Category'
-            ,position: 'bottom'
-            ,fields: [field1]
-            ,title: 'Field Name' //TODO get aliase name for field
-            ,grid: true
-            ,label: {
-                    rotate: {
-                        degrees: 315
+                ,{
+                     type: 'Category'
+                    ,position: 'bottom'
+                    ,fields: [field1]
+                    ,title: 'Field Name' //TODO get aliase name for field
+                    ,grid: true
+                    ,label: {
+                            rotate: {
+                                degrees: 315
+                            }
+                        }
                     }
-                }
-        }]
+                ]
 
-    }
+        }
 
     ,chartSeries: function(type,field1,field2){
             return [{

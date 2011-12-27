@@ -72,7 +72,7 @@ GeoExt.PrickerParser = (function() {
                             })
 
                         this.onParceFunc.call(this.onParceContext,
-                            { data: data, allFields: allFields, fieldsXData: fieldsXData, fieldsYData: fieldsYData })
+                            { data: data, allFields: allFields, fieldsXData: fieldsXData, fieldsYData: fieldsYData, aliases: aliases })
 
                     }
                 ,failure: function(er){

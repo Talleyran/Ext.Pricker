@@ -37,10 +37,11 @@ GeoExt.Pricker = (function() {
         this.prickerParser.doOnParce(this.show_char, this)
         this.activate()
 
-        this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow')
     }
 
     Pricker.prototype.show_char = function(json) {
+        if ( this.prickerWindow ) this.prickerWindow.destroy()
+        this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow')
         FieldStoreX.loadData(json.fieldsXData)
         FieldStoreY.loadData(json.fieldsYData)
         TypeStore.loadData([ {id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" } ])
