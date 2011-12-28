@@ -57,13 +57,6 @@ GeoExt.Pricker = (function() {
         this.format = 'text/plain'
         if(options.format != undefined) this.format = options.format
 
-        /** api: config[featureCount]
-         *  ``Integer``
-         *  parameter for GetFeatureInfo request
-         */
-        this.featureCount = 5
-        if(options.featureCount != undefined) this.featureCount = options.featureCount
-
         /** api: config[layers]
          *  ``Array``
          *  ``OpenLayers.layer`` used for GetFeatureInfo request
@@ -155,6 +148,8 @@ GeoExt.Pricker = (function() {
             Ext4.Array.each(this.layers, function(el,i){
                     queryLayers.push(el.params.LAYERS)
                 })
+            var queryLayersString = queryLayers.join(',')
+                ,queryLayersSize = queryLayersString.split(',').length
         var params = {
             REQUEST: "GetFeatureInfo",
             //EXCEPTIONS: "application/vnd.ogc.se_xml",
@@ -164,9 +159,9 @@ GeoExt.Pricker = (function() {
             X: e.xy.x,
             Y: e.xy.y,
             INFO_FORMAT: this.format,
-            QUERY_LAYERS: queryLayers.join(','),
+            QUERY_LAYERS: queryLayersString,
             LAYERS: queryLayers.join(','),
-            FEATURE_COUNT: this.featureCount,
+            FEATURE_COUNT: queryLayersSize,
             //Styles: '',
             WIDTH: this.map.size.w,
             HEIGHT: this.map.size.h,
