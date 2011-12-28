@@ -1,22 +1,58 @@
+/**
+ * Copyright TODO
+ */
+
+/** api: (define)
+ *  module = GeoExt
+ *  class = PrickerParser
+ */
+
+/** api: example
+ *  Sample code to create a PrickerParser:
+ * 
+ *  .. code-block:: javascript
+ *     
+ *      var new GeoExt.PrickerParser('/aliases', 'nameAliase')
+ */
+
+/** api: constructor
+ *  .. class:: PrickerParser(config)
+ *   
+ *      Parse GetFeatureInfo respond
+ */
+
 //TODO extend from extjs observer 
 GeoExt.PrickerParser = (function() {
 
     function PrickerParser(aliaseUrl, nameTitleAlias) {
+
+            /** api: method[aliaseUrl]
+             *  Default field aliases url.
+             */
             this.aliaseUrl = '/'
             if(aliaseUrl != undefined) this.aliaseUrl = aliaseUrl
 
+            /** api: config[nameTitleAlias]
+             *  Title for field with layers name.
+             */
             this.nameTitleAlias = 'name'
             if(nameTitleAlias != undefined) this.nameTitleAlias = nameTitleAlias
 
         }
 
+    /** api: method[chartAxes]
+     *  :param func: ``Function``
+     *  :param contex: ``Object``
+     *  Callback on parse in context.
+     */
     PrickerParser.prototype.doOnParce = function(func, context) {
         this.onParceFunc = func
         this.onParceContext = ( context == undefined ? this : context )
     }
 
-    /** public: method[parse]
-     *  TODO.
+    /** api: method[parse]
+     * ``String`` Parse string to hash
+     * for initialize ``PrickerWindow``
      */
     PrickerParser.prototype.parse = function(respond) {
         //parcing..
@@ -67,7 +103,6 @@ GeoExt.PrickerParser = (function() {
                 }
             }
 
-        //this.parseData = data
         allFields = Ext4.Array.union(fieldsX, fieldsY)
 
 

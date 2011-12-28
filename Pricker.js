@@ -5,10 +5,7 @@
 /** api: (define)
  *  module = GeoExt
  *  class = Pricker
- *  base_link = `Ext.Window <http://dev.sencha.com/deploy/dev/docs/?class=Ext.Window>`_
  */
-
-Ext.namespace("GeoExt");
 
 /** api: example
  *  Sample code to create a popup anchored to a feature:
@@ -30,10 +27,10 @@ Ext.namespace("GeoExt");
 /** api: constructor
  *  .. class:: Pricker(config)
  *   
- *      Pricker are a specialized Window that showing charts 
+ *      Pricker call are a specialized Window that showing charts 
  *      by getFeatureInfo respond parsing (for
  *      selected layers). When a chart's window is showed, you can
- *      change fields for axes (based on Ext4.Store)
+ *      change fields for axes (based on ``Ext4.Store``)
  */
 
 GeoExt.Pricker = (function() {
@@ -91,22 +88,21 @@ GeoExt.Pricker = (function() {
 
         /** private: config[handler]
          *  ``OpenLayers.Controller``
-         *  TODO.
          */
         this.handler = new OpenLayers.Handler.Click( this, { 'click': this.prick }, handlerOptions)
 
 
         /** private: config[handler]
          *  ``GeoExt.PrickerParser``
-         *  TODO.
          */
         this.prickerParser = new GeoExt.PrickerParser(options.aliaseUrl, options.nameTitleAlias)
 
-        this.prickerParser.doOnParce(this.show_char, this)
+        this.prickerParser.doOnParce(this.show_chart, this)
         this.handler.draw = function(){}
         this.map.addControl(this.handler)
         this.activate()
 
+        //TODO
         //var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
         //style_mark.externalGraphic = "img/mark.png";
         //this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
@@ -114,7 +110,11 @@ GeoExt.Pricker = (function() {
 
     }
 
-    Pricker.prototype.show_char = function(json) {
+    /** private: method[show_chart]
+     *  ``Object``
+     *  Create and show window with charts.
+     */
+    Pricker.prototype.show_chart = function(json) {
         if ( this.prickerWindow ) this.prickerWindow.destroy()
         this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow', Ext4.Object.merge({
                  chartField1: json.fieldsXData[0].id
@@ -131,20 +131,30 @@ GeoExt.Pricker = (function() {
         this.prickerWindow.show()
     }
 
+    /** api: method[activate]
+     *  Activate event handler.
+     */
     Pricker.prototype.activate = function() {
         this.handler.activate()
     }
 
+    /** api: method[deactivate]
+     *  Deactivate event handler.
+     */
     Pricker.prototype.deactivate = function() {
         this.handler.deactivate()
     }
 
+    /** private: method[prick]
+     *  ``Object``
+     *  Send GetFeatureInfo request then
+     *  pass data to parser.
+     */
     Pricker.prototype.prick = function(e) {
             var queryLayers = []
             Ext4.Array.each(this.layers, function(el,i){
                     queryLayers.push(el.params.LAYERS)
                 })
-
         var params = {
             REQUEST: "GetFeatureInfo",
             //EXCEPTIONS: "application/vnd.ogc.se_xml",
@@ -178,10 +188,18 @@ GeoExt.Pricker = (function() {
 
         }
 
+    /** api: method[addLayer]
+     *  ``OpenLayers.Layer``
+     *  Add layer for GetFeatureInfo request.
+     */
     Pricker.prototype.addLayer = function(layer) {
         this.layers.push(layer)
     }
 
+    /** api: method[removeLayer]
+     *  ``OpenLayers.Layer``
+     *  Remove layer from GetFeatureInfo request.
+     */
     Pricker.prototype.removeLayer = function(layer) {
         var i = this.layers.indexOf(layer)
         this.layers.splice(i,i)

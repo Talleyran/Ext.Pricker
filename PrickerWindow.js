@@ -1,20 +1,104 @@
+/**
+ * Copyright TODO
+ */
+
+/** api: (define)
+ *  module = GeoExt
+ *  class = Pricker
+ *  base_link = `Ext.Window <http://dev.sencha.com/deploy/dev/docs/?class=Ext.Window>`_
+ */
+
+
+Ext.namespace("GeoExt");
+
+/** api: example
+ *  Sample code to create a popup:
+ * 
+ *  .. code-block:: javascript
+ *
+ *      var prickerWindow = new Ext4.create('GeoExt.PrickerWindow', {
+ *               chartField1: field1
+ *              ,chartField2: field2
+ *              ,chartAliases: aliases
+ *              ,fieldsAxisType: type
+ *          }
+ */
+
+/** api: constructor
+ *  .. class:: Pricker(config)
+ *
+ *      PrickerWindow are a specialized Window that showing charts.
+ *      Used by Pricker instnce.
+ */
 Ext4.define('GeoExt.PrickerWindow', {
+    /** api: config[extend]
+     *  ``String``  extend from ``Ext.Window``.
+     */
      extend: 'Ext.Window'
+
+    /** api: config[width]
+     *  ``Integer`` Default window width.
+     */
     ,width: 800
+
+    /** api: config[height]
+     *  ``Integer`` Default window height.
+     */
     ,height: 400
+
     ,shadow: false
+
     ,maximizable: true
+
     ,title: 'Area Chart'
-    ,chartAliases: {}
+
     ,renderTo: Ext4.getBody()
+
     ,layout: 'fit'
+
+    /** api: config[chartAliases]
+     *  ``Object`` Hash with aliases for axis title.
+     */
+    ,chartAliases: {}
+
+    /** api: config[chartField1]
+     *  ``String`` Selected fireld for axis1.
+     */
     ,chartField1: ''
+
+    /** api: config[chartField2]
+     *  ``String`` Selected fireld for axis2.
+     */
     ,chartField2: ''
+
+    /** api: config[defaultAxisTitle1]
+     *  ``String`` Default title for axis1.
+     */
     ,defaultAxisTitle1: 'X'
+
+    /** api: config[defaultAxisTitle2]
+     *  ``String`` Default title for axis2.
+     */
     ,defaultAxisTitle2: 'Y'
+
+    /** api: config[fieldComboName1]
+     *  ``String`` Default label for axis combobox1.
+     */
     ,fieldComboName1: 'Choose X field'
+
+    /** api: config[fieldComboName2]
+     *  ``String`` Default label for axis combobox2.
+     */
     ,fieldComboName2: 'Choose Y field'
+
+    /** api: config[typeComboName]
+     *  ``String`` Default label title for type combobox.
+     */
     ,typeComboName: 'Choose type'
+
+    /** api: config[chartType]
+     *  ``String`` Default chart type.
+     */
     ,chartType: 'area'
     ,tbar:[
              {xtype: 'combo',
@@ -47,11 +131,21 @@ Ext4.define('GeoExt.PrickerWindow', {
             this.getDockedComponent(0).items.get(2).fieldLabel = this.typeComboName
         }
 
+    /** api: method[chartType]
+     *  Show chart window
+     */
     ,show: function() {
             this.setChart()
             this.callParent(arguments)
         }
 
+    /** private: method[chartAxes]
+     *  :param type: ``String``
+     *  :param field1: ``String``
+     *  :param field2: ``String``
+     *  :return ``Object``
+     *  Return options for initialize Chart
+     */
     ,chartAxes: function(type,field1,field2){
         var title1 = this.defaultAxisTitle1
         if(this.chartAliases[field1]) title1=this.chartAliases[field1]
@@ -87,6 +181,13 @@ Ext4.define('GeoExt.PrickerWindow', {
             ]
         }
 
+    /** private: method[chartSeries]
+     *  :param type: ``String``
+     *  :param field1: ``String``
+     *  :param field2: ``String``
+     *  :return ``Object``
+     *  Return options for initialize Chart
+     */
     ,chartSeries: function(type,field1,field2){
             return [{
                  type: type
@@ -100,6 +201,13 @@ Ext4.define('GeoExt.PrickerWindow', {
             }]
         }
 
+    /** private: method[chartOptions]
+     *  :param type: ``String``
+     *  :param field1: ``String``
+     *  :param field2: ``String``
+     *  :return ``Object``
+     *  Return options for initialize Chart
+     */
     ,chartOptions: function(type,field1,field2) {
             return {
                      style: 'background:#fff'
@@ -110,35 +218,41 @@ Ext4.define('GeoExt.PrickerWindow', {
                 }
         }
 
+    /** api: method[setChart]
+     *  Iitialize Chart
+     */
     ,setChart: function() {
             this.removeAll(true)
             this.add(Ext4.create('Ext.chart.Chart', this.chartOptions(this.chartType, this.chartField1, this.chartField2)))
         }
 
-    //newChartFrom: function(name)
-        //{
-            //this.newChartOptions = this.chartOptions[name].dup()
-        //},
+    /** api: method[saveChart]
+     */
+    ,saveChart: function() { /*TODO*/ }
 
-    //setCustomParam: function(name)
-        //{
-            //[>this.newChartOptions[param] = ... <]
-        //},
+    /** api: method[loadChart]
+     */
+    ,loadChart: function() { /*TODO*/ }
 
-    ,saveNewChart: function() { /*...*/ }
-
-    ,loadCharts: function() { /*...*/ }
-
+    /** private: method[typeSelect]
+     *  Type combobox callback on select.
+     */
     ,typeSelect: function(combo,e) {
             this.chartType = e[0].data.id
             this.setChart()
         }
 
+    /** private: method[typeSelect]
+     *  Combobox1 callback on select.
+     */
     ,xFieldSelect: function(combo,e) {
             this.chartField1 = e[0].data.id
             this.setChart()
         }
 
+    /** private: method[typeSelect]
+     *  Combobox2 callback on select.
+     */
     ,yFieldSelect: function(combo,e) {
             this.chartField2 = e[0].data.id
             this.setChart()
