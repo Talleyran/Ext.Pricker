@@ -153,7 +153,6 @@ GeoExt.Pricker = (function() {
     Pricker.prototype.prick = function(e) {
             var queryLayers = []
             Ext4.Array.each(this.layers, function(el,i){
-                    console.log(el.params.LAYERS)
                     queryLayers.push(el.params.LAYERS)
                 })
         var params = {
