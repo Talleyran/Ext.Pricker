@@ -1,43 +1,119 @@
+/**
+ * Copyright TODO
+ */
+
+/** api: (define)
+ *  module = GeoExt
+ *  class = Pricker
+ *  base_link = `Ext.Window <http://dev.sencha.com/deploy/dev/docs/?class=Ext.Window>`_
+ */
+
+Ext.namespace("GeoExt");
+
+/** api: example
+ *  Sample code to create a popup anchored to a feature:
+ * 
+ *  .. code-block:: javascript
+ *     
+ *      var pricker = new GeoExt.Pricker({
+ *           map: map
+ *          ,layers: [l1,l2] //adding layers
+ *          ,getInfoUrl: '/wms'
+ *          ,aliaseUrl: '/translate'
+ *          ,chartOptions: {
+ *                  title: 'Charts'
+ *                  ,fieldComboName1: 'Set X value'
+ *              }
+ *      })
+ */
+
+/** api: constructor
+ *  .. class:: Pricker(config)
+ *   
+ *      Pricker are a specialized Window that showing charts 
+ *      by getFeatureInfo respond parsing (for
+ *      selected layers). When a chart's window is showed, you can
+ *      change fields for axes (based on Ext4.Store)
+ */
+
 GeoExt.Pricker = (function() {
 
     function Pricker(options) {
 
+        /** api: config[map]
+         *  ``OpenLayers.Map``
+         *  OpenLayers.Map bind
+         */
         this.map = options.map
 
+        /** api: config[chartOptions]
+         *  ``Object``
+         *  Attributes for ``PrickerWindow`` intialization
+         *  layer.
+         */
         this.chartOptions = options.chartOptions
 
+        /** api: config[format]
+         *  ``String``
+         *  parameter for GetFeatureInfo request
+         */
         this.format = 'text/plain'
         if(options.format != undefined) this.format = options.format
 
+        /** api: config[featureCount]
+         *  ``Integer``
+         *  parameter for GetFeatureInfo request
+         */
         this.featureCount = 5
         if(options.featureCount != undefined) this.featureCount = options.featureCount
 
+        /** api: config[layers]
+         *  ``Array``
+         *  ``OpenLayers.layer`` used for GetFeatureInfo request
+         */
         this.layers = []
         if(options.layers != undefined) this.layers = options.layers
 
+        /** api: config[getInfoUrl]
+         *  ``String``
+         *  Path for for GetFeatureInfo request
+         */
         this.getInfoUrl = '/'
         if(options.getInfoUrl != undefined) this.getInfoUrl = options.getInfoUrl
 
-        this.handlerOptions = {
+        var handlerOptions = {
                   'single': true,
                   'double': false,
                   'pixelTolerance': 0,
                   'stopSingle': false,
                   'stopDouble': false }
-        this.handler = new OpenLayers.Handler.Click( this, { 'click': this.prick }, this.handlerOptions)
+
+
+        /** private: config[handler]
+         *  ``OpenLayers.Controller``
+         *  TODO.
+         */
+        this.handler = new OpenLayers.Handler.Click( this, { 'click': this.prick }, handlerOptions)
+
+
+        /** private: config[handler]
+         *  ``GeoExt.PrickerParser``
+         *  TODO.
+         */
+        this.prickerParser = new GeoExt.PrickerParser(options.aliaseUrl, options.nameTitleAlias)
+
+        this.prickerParser.doOnParce(this.show_char, this)
         this.handler.draw = function(){}
         this.map.addControl(this.handler)
-
-        var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-        style_mark.externalGraphic = "img/mark.png";
-        this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
-        this.mark = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0),null,style_mark)
-
-        this.prickerParser = new GeoExt.PrickerParser(options.aliaseUrl, options.nameTitleAlias)
-        this.prickerParser.doOnParce(this.show_char, this)
         this.activate()
 
+        //var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+        //style_mark.externalGraphic = "img/mark.png";
+        //this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
+        //this.mark = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0),null,style_mark)
+
     }
+
     Pricker.prototype.show_char = function(json) {
         if ( this.prickerWindow ) this.prickerWindow.destroy()
         this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow', Ext4.Object.merge({
@@ -110,19 +186,6 @@ GeoExt.Pricker = (function() {
         var i = this.layers.indexOf(layer)
         this.layers.splice(i,i)
     }
-
-    Pricker.prototype.urlByLayers = function(lonlat) {
-        var layersIds = []
-        for(var i=0; i<this.layers.length; i++)
-            {
-                layersIds.push(this.layers[i].prickerId)
-            }
-
-        var url = this.root_url + '?layers=' + layersIds.join(',') + '&x=' + lonlat.lon + '&y=' + lonlat.lat
-        //console.log(url)
-        return url
-    }
-
 
     return Pricker
 
