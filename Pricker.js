@@ -57,6 +57,13 @@ GeoExt.Pricker = (function() {
         this.format = 'text/plain'
         if(options.format != undefined) this.format = options.format
 
+        /** api: config[buffer]
+         *  ``Integer``
+         *  parameter for GetFeatureInfo request
+         */
+        this.buffer = 3
+        if(options.buffer != undefined) this.buffer = options.buffer
+
         /** api: config[layers]
          *  ``Array``
          *  ``OpenLayers.layer`` used for GetFeatureInfo request
@@ -151,22 +158,20 @@ GeoExt.Pricker = (function() {
             var queryLayersString = queryLayers.join(',')
                 ,queryLayersSize = queryLayersString.split(',').length
         var params = {
-            REQUEST: "GetFeatureInfo",
-            //EXCEPTIONS: "application/vnd.ogc.se_xml",
-            BBOX: this.map.getExtent().toBBOX(),
-            SERVICE: "WMS",
-            VERSION: "1.1.1",
-            X: e.xy.x,
-            Y: e.xy.y,
-            INFO_FORMAT: this.format,
-            QUERY_LAYERS: queryLayersString,
-            LAYERS: queryLayers.join(','),
-            FEATURE_COUNT: queryLayersSize,
-            //Styles: '',
-            WIDTH: this.map.size.w,
-            HEIGHT: this.map.size.h,
-            //format: this.format,
-            srs: this.map.layers[0].params.SRS}
+            REQUEST: "GetFeatureInfo"
+            ,BBOX: this.map.getExtent().toBBOX()
+            ,SERVICE: "WMS"
+            ,VERSION: "1.1.1"
+            ,X: e.xy.x
+            ,Y: e.xy.y
+            ,INFO_FORMAT: this.format
+            ,QUERY_LAYERS: queryLayersString
+            ,LAYERS: queryLayers.join(',')
+            ,FEATURE_COUNT: queryLayersSize
+            ,WIDTH: this.map.size.w
+            ,HEIGHT: this.map.size.h
+            ,BUFFER: this.buffer
+            ,srs: this.map.layers[0].params.SRS}
 
         Ext4.Ajax.request({
                  method: 'post'
