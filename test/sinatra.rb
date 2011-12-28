@@ -7,17 +7,17 @@ get '/' do
     File.open(File.join(settings.public_folder, 'Ext.Pricker/example.html')).read
 end
 
-get '/translate?*' do
+get '/translate' do
     puts '----------------------------'
     p params
     puts '----------------------------'
     Net::HTTP.get('oceanviewer.ru', "/OceanViewer2/translate?code=#{params[:code]}&type=#{params[:type]}")
 end
 
-get '/wms?*' do
+get '/resources/wms' do
     puts '----------------------------'
     p params
     puts '----------------------------'
-    File.open(File.join(settings.public_folder, 'Ext.Pricker/test/geoserver-GetFeatureInfo.plain')).read
-    #Net::HTTP.get('oceanviewer.ru', "/resources/ru_hydrometcentre_42/wms?#{params.map{|k,v|"#{k}=#{v}"}.join('&')}")
+    Net::HTTP.get('oceanviewer.ru', "/resources/wms?#{params.map{|k,v|"#{k}=#{v}"}.join('&')}")
+    #File.open(File.join(settings.public_folder, 'Ext.Pricker/test/geoserver-GetFeatureInfo.plain')).read
 end

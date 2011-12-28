@@ -8,14 +8,10 @@ Ext4.onReady(function() {
     }
 
     var map = new OpenLayers.Map('mappanel',options)
-    var l1 = new OpenLayers.Layer.WMS("t1", "http://wms.latlon.org", {layers: "yhsat"})
-    var l2 = new OpenLayers.Layer.WMS("t2", "http://wms.latlon.org", {layers: "yasat"}, {isBaseLayer: false})
-
-    //var osm1 = new OpenLayers.Layer.OSM('1',{},{'isBaseLayer': false})
-    //var osm2 = new OpenLayers.Layer.OSM('2',{},{'isBaseLayer': false})
-    //var osm3 = new OpenLayers.Layer.OSM('3',{},{'isBaseLayer': false})
-    //var osm4 = new OpenLayers.Layer.OSM('4',{},{'isBaseLayer': false})
-    //var osm5 = new OpenLayers.Layer.OSM('5',{},{'isBaseLayer': false})
+    //var l1 = new OpenLayers.Layer.WMS("t1", "http://wms.latlon.org", {layers: "yhsat"})
+    //var l2 = new OpenLayers.Layer.WMS("t2", "http://wms.latlon.org", {layers: "yasat"}, {isBaseLayer: false})
+    var l1 = new OpenLayers.Layer.WMS("t1", "http://oceanviewer.ru/eko/wms", {layers: "eko_merge"})
+    var l2 = new OpenLayers.Layer.WMS("t2", "http://oceanviewer.ru/resources/ru_hydrometcentre_46/wms", {layers: "ru_hydrometcentre_46:ru_hydrometcentre_46_2"}, {isBaseLayer: false})
 
     map.addLayers([l1 , l2 ])
 
@@ -23,9 +19,9 @@ Ext4.onReady(function() {
 
     var pricker = new GeoExt.Pricker({
          map: map
-        ,layers: [l1,l2] //adding layers
+        ,layers: [l2] //adding layers
         ,aliaseUrl: '/translate'
-        ,getInfoUrl: '/wms'
+        ,getInfoUrl: '/resources/wms'
         ,nameTitleAlias: 'назв.слоя'
         ,chartOptions: {
                 title: 'Графики'
