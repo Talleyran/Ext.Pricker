@@ -55,7 +55,6 @@ GeoExt.PrickerParser = (function() {
      * for initialize ``PrickerWindow``
      */
     PrickerParser.prototype.parse = function(respond) {
-        //parcing..
         var data = []
             ,fieldsY = []
             ,fieldsX = []
@@ -67,7 +66,6 @@ GeoExt.PrickerParser = (function() {
         fieldsXData.push({id:'name', name: this.nameTitleAlias})
 
         var t = respond.split("--------------------------------------------\n")
-        console.log(t)
         for(var i = 0; i<t.length-1; i+=2) {
                 var h = { name: t[i].split("'")[1] }
                 var tt = t[i+1].split("\n")

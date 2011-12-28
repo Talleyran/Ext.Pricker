@@ -7,7 +7,7 @@ get '/' do
     File.open(File.join(settings.public_folder, 'Ext.Pricker/example.html')).read
 end
 
-get '/translate' do
+get '/OceanViewer2/translate' do
     puts '----------------------------'
     p params
     puts '----------------------------'
