@@ -29,7 +29,7 @@ Ext4.onReady(function() {
 
     var pricker = new GeoExt.Pricker({
          map: map
-        ,layers: [ l2 , l3 , l4 , l5 /*, l6 , l7 , l8 , l9 , l10 , l11*/ ] //adding layers
+        ,layers: [ l2 , l3 , l4 , l5 , l6 , l7 /*, l8 , l9 , l10 , l11*/ ] //adding layers
         ,aliaseUrl: '/OceanViewer2/translate'
         ,getInfoUrl: '/resources/wms'
         ,nameTitleAlias: 'назв.слоя'

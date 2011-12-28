@@ -169,7 +169,7 @@ GeoExt.Pricker = (function() {
             srs: this.map.layers[0].params.SRS}
 
         Ext4.Ajax.request({
-                 method: 'get'
+                 method: 'post'
                 ,url: this.getInfoUrl
                 ,params: params
                 ,scope: this
