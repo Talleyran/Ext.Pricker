@@ -18,6 +18,8 @@ post '/resources/wms' do
     puts '----------------------------'
     p params
     puts '----------------------------'
+    #Net::HTTP.get('oceanviewer.ru', "/resources/wms?code=#{params[:code]}&type=#{params[:type]}")
+    #puts "http://oceanviewer.ru/resources/wms?#{params.map{|k,v|"#{k}=#{v}"}.join('&')}"
     uri = URI('http://oceanviewer.ru/resources/wms')
     res = Net::HTTP.post_form(uri, params)
     res.body

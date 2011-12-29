@@ -10,7 +10,7 @@ Ext4.onReady(function() {
     var map = new OpenLayers.Map('mappanel',options)
     var l1 = new OpenLayers.Layer.WMS("t1", "http://oceanviewer.ru/eko/wms", {layers: "eko_merge"})
     var layers = []
-    for(i=1; i<=11; i++){
+    for(i=1; i<=6; i++){
         layers.push(new OpenLayers.Layer.WMS("w" + i, "http://oceanviewer.ru/resources/wms", {layers: "ru_hydrometcentre_42:ru_hydrometcentre_42_" + i}, {isBaseLayer: false, visibility: false}))
     }
 
@@ -25,7 +25,7 @@ Ext4.onReady(function() {
         ,aliaseUrl: '/OceanViewer2/translate'
         ,getInfoUrl: '/resources/wms'
         ,nameTitleAlias: 'назв.слоя'
-        ,buffer: 3
+        //,buffer: 0
         ,chartOptions: {
                 title: 'Графики'
                 ,fieldComboName1: 'В-те знач. по X'
@@ -36,7 +36,7 @@ Ext4.onReady(function() {
             }
     })
 
-    map.setCenter((new OpenLayers.LonLat(0, 0)).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()),1)
+    map.setCenter(new OpenLayers.LonLat(13306157, 5119446),5)
 
     //var mapPanel = new GeoExt.MapPanel({
         //renderTo: "mappanel",

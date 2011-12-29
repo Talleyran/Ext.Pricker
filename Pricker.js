@@ -159,19 +159,20 @@ GeoExt.Pricker = (function() {
                 ,queryLayersSize = queryLayersString.split(',').length
         var params = {
             REQUEST: "GetFeatureInfo"
-            ,BBOX: this.map.getExtent().toBBOX()
             ,SERVICE: "WMS"
             ,VERSION: "1.1.1"
-            ,X: e.xy.x
-            ,Y: e.xy.y
             ,INFO_FORMAT: this.format
             ,QUERY_LAYERS: queryLayersString
             ,LAYERS: queryLayers.join(',')
             ,FEATURE_COUNT: queryLayersSize
+            //,BUFFER: this.buffer
+            ,srs: this.map.layers[0].params.SRS
+            ,BBOX: this.standartExtent(this.map.getExtent()).toBBOX()
+            ,X: e.xy.x
+            ,Y: e.xy.y
             ,WIDTH: this.map.size.w
             ,HEIGHT: this.map.size.h
-            ,BUFFER: this.buffer
-            ,srs: this.map.layers[0].params.SRS}
+            }
 
         Ext4.Ajax.request({
                  method: 'post'
@@ -203,6 +204,28 @@ GeoExt.Pricker = (function() {
     Pricker.prototype.removeLayer = function(layer) {
         var i = this.layers.indexOf(layer)
         this.layers.splice(i,i)
+    }
+
+    /** api: method[standartExtent =]
+     *  ``OpenLayers.Bounds``
+     */
+    Pricker.prototype.standartExtent = function(extent) {
+        var dx = extent.right - extent.left
+        var dy = extent.top - extent.bottom
+        //console.log(dx)
+        //console.log(dy)
+        var addX = ( dx - 3732573 )/2
+        var addY = ( dy - 2949858 )/2
+        var new_extent = new OpenLayers.Bounds(extent.left + addX, extent.bottom + addY, extent.right - addX, extent.top - addY)
+        //console.log(extent.toBBOX())
+        //console.log(new_extent.toBBOX())
+        //console.log((new_extent.left + new_extent.right)/2)
+        //console.log((extent.left + extent.right)/2)
+
+        //console.log((new_extent.top + new_extent.bottom)/2)
+        //console.log((extent.top + extent.bottom)/2)
+
+        return new_extent
     }
 
     return Pricker
