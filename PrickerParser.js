@@ -54,7 +54,7 @@ GeoExt.PrickerParser = (function() {
      * ``String`` Parse string to hash
      * for initialize ``PrickerWindow``
      */
-    PrickerParser.prototype.parse = function(respond) {
+    PrickerParser.prototype.parse = function(responds) {
         var data = []
             ,fieldsY = []
             ,fieldsX = []
@@ -65,10 +65,10 @@ GeoExt.PrickerParser = (function() {
 
         fieldsXData.push({id:'name', name: this.nameTitleAlias})
 
-        var t = respond.split("--------------------------------------------\n")
-        for(var i = 0; i<t.length-1; i+=2) {
-                var h = { name: t[i].split("'")[1] }
-                var tt = t[i+1].split("\n")
+        Ext4.Array.each(responds,function(respond,i){
+                var t = respond.split("--------------------------------------------\n")
+                var h = { name: t[0].split("'")[1] }
+                var tt = t[1].split("\n")
                 for(var j = 0; j<tt.length; j+=1) {
                     var params = tt[j].split(" = ")
                     var value = null
@@ -99,7 +99,7 @@ GeoExt.PrickerParser = (function() {
                             data.push(h)
                         }
                 }
-            }
+            })
 
         allFields = Ext4.Array.union(fieldsX, fieldsY)
 

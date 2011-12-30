@@ -156,36 +156,50 @@ GeoExt.Pricker = (function() {
                     queryLayers.push(el.params.LAYERS)
                 })
             var queryLayersString = queryLayers.join(',')
-                ,queryLayersSize = queryLayersString.split(',').length
-        var params = {
-            REQUEST: "GetFeatureInfo"
-            ,SERVICE: "WMS"
-            ,VERSION: "1.1.1"
-            ,INFO_FORMAT: this.format
-            ,QUERY_LAYERS: queryLayersString
-            ,LAYERS: queryLayers.join(',')
-            ,FEATURE_COUNT: queryLayersSize
-            //,BUFFER: this.buffer
-            ,srs: this.map.layers[0].params.SRS
-            ,BBOX: this.standartExtent(this.map.getExtent()).toBBOX()
-            ,X: e.xy.x
-            ,Y: e.xy.y
-            ,WIDTH: this.map.size.w
-            ,HEIGHT: this.map.size.h
-            }
+                ,splitedQueryLayers = queryLayersString.split(',')
+            var params = {
+                    REQUEST: "GetFeatureInfo"
+                    ,SERVICE: "WMS"
+                    ,VERSION: "1.1.1"
+                    ,INFO_FORMAT: this.format
+                    ,FEATURE_COUNT: 1
+                    //,BUFFER: this.buffer
+                    ,srs: this.map.layers[0].params.SRS
+                    ,BBOX: this.map.getExtent().toBBOX()
+                    ,X: e.xy.x
+                    ,Y: e.xy.y
+                    ,WIDTH: this.map.size.w
+                    ,HEIGHT: this.map.size.h
+                }
+            var responds = []
+                ,failRespondCount = 0
+            Ext4.Array.each(splitedQueryLayers, function(el,i){
+                    params.QUERY_LAYERS = el
+                    params.LAYERS = el
+                    Ext4.Ajax.request({
+                             method: 'post'
+                            ,url: this.getInfoUrl
+                            ,params: params
+                            ,scope: this
+                            ,success: function(respond){
+                                    responds.push(respond)
+                                    //.responseText
+                                    if(responds.length - failRespondCount == splitedQueryLayers.length){
+                                            this.prickerParser.parse(
+                                                    Ext4.Array.sort(responds,function(a,b,c){
+                                                            return a.requestId > b.requestId
+                                                        })
+                                                    .map(function(el){return el.responseText})
+                                                )
+                                        }
+                                }
+                            ,failure: function(er){
+                                    failRespondCount += 1
+                                    //console.log( er )
+                                }
+                        })
+                },this)
 
-        Ext4.Ajax.request({
-                 method: 'post'
-                ,url: this.getInfoUrl
-                ,params: params
-                ,scope: this
-                ,success: function(response){
-                        this.prickerParser.parse(response.responseText)
-                    }
-                ,failure: function(er){
-                        console.log( er )
-                    }
-            })
 
         }
 
@@ -204,28 +218,6 @@ GeoExt.Pricker = (function() {
     Pricker.prototype.removeLayer = function(layer) {
         var i = this.layers.indexOf(layer)
         this.layers.splice(i,i)
-    }
-
-    /** api: method[standartExtent =]
-     *  ``OpenLayers.Bounds``
-     */
-    Pricker.prototype.standartExtent = function(extent) {
-        var dx = extent.right - extent.left
-        var dy = extent.top - extent.bottom
-        //console.log(dx)
-        //console.log(dy)
-        var addX = ( dx - 3732573 )/2
-        var addY = ( dy - 2949858 )/2
-        var new_extent = new OpenLayers.Bounds(extent.left + addX, extent.bottom + addY, extent.right - addX, extent.top - addY)
-        //console.log(extent.toBBOX())
-        //console.log(new_extent.toBBOX())
-        //console.log((new_extent.left + new_extent.right)/2)
-        //console.log((extent.left + extent.right)/2)
-
-        //console.log((new_extent.top + new_extent.bottom)/2)
-        //console.log((extent.top + extent.bottom)/2)
-
-        return new_extent
     }
 
     return Pricker
