@@ -106,11 +106,7 @@ Ext4.define('GeoExt.PrickerWindow', {
 
           Ext4.apply(this, {
 
-            layout: {
-                type: 'hbox'
-            }
-
-            ,tbar:[
+            tbar:[
                     {xtype: 'panel'
                      ,flex: 1
                      ,frame : false
@@ -174,6 +170,11 @@ Ext4.define('GeoExt.PrickerWindow', {
                   ]}
                 ]
 
+            ,layout: {
+                type: 'hbox',
+                pack: 'start',
+                align: 'stretch'
+            }
             ,items: [
               {
                 xtype: 'grid',
@@ -316,6 +317,9 @@ Ext4.define('GeoExt.PrickerWindow', {
         var axisType2 = 'Numeric'
         if(this.pricker.fieldsAxisType[field2]) axisType2=this.pricker.fieldsAxisType[field2]
 
+        //var values = Ext4.Array.map(this.pricker.chartStoreData,function(el,i){return el[field2]})
+        //,sorted_values = Ext4.Array.sort(values,function(a,b){return a > b})[0]
+
         return [
                 {
                      type: axisType1
@@ -323,7 +327,6 @@ Ext4.define('GeoExt.PrickerWindow', {
                     ,fields: [field1]
                     ,title: title1
                     ,grid: true
-                    ,dateFormat: 'M d'
                     ,label: {
                             rotate: {
                                     degrees: 315
@@ -332,6 +335,8 @@ Ext4.define('GeoExt.PrickerWindow', {
                 }
                 ,{
                      type: axisType2
+                    //,minimum: sorted_values[0]
+                    //,maximum: sorted_values[sorted_values.length - 1]
                     ,grid: true
                     ,position: 'left'
                     ,fields: [field2]
@@ -371,9 +376,10 @@ Ext4.define('GeoExt.PrickerWindow', {
             return {
                      style: 'background:#fff'
                     ,id: 'chart'
-                    //,columnWidth: .75
-                    ,height: 300
-                    ,width: 600
+                    //,columnWidth: 1
+                    ,flex: 1
+                    //,height: '100%'
+                    //,width: 500
                     ,animate: true
                     ,store: this.chartStore
                     ,axes: this.chartAxes(type,field1,field2)
@@ -396,6 +402,7 @@ Ext4.define('GeoExt.PrickerWindow', {
 
             var chart = Ext4.create('Ext.chart.Chart', this.chartOptions(this.chartType, this.chartField1, this.chartField2))
             this.add(chart)
+
         }
 
 

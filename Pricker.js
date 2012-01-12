@@ -259,7 +259,7 @@ GeoExt.Pricker = (function() {
                               //.responseText
                               if(responds.length - failRespondCount == this.layersStoreData.length){
                                       this.prickerParser.parse(
-                                              Ext4.Array.sort(responds,function(a,b,c){
+                                              Ext4.Array.sort(responds,function(a,b){
                                                       return a.requestId > b.requestId
                                                   })
                                               .map(function(em){return em.responseText})
@@ -315,7 +315,6 @@ GeoExt.Pricker = (function() {
     /** api: method[loadChart]
      */
     Pricker.prototype.loadChart = function(params) {
-      console.log(this)
       this.chartField1 = params.chartField1
       this.chartField2 = params.chartField2
       this.chartType = params.chartType

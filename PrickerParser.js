@@ -67,38 +67,46 @@ GeoExt.PrickerParser = (function() {
 
         Ext4.Array.each(responds,function(respond,i){
                 var t = respond.split("--------------------------------------------\n")
-                var h = { name: t[0].split("'")[1] }
-                var tt = t[1].split("\n")
-                for(var j = 0; j<tt.length; j+=1) {
-                    var params = tt[j].split(" = ")
-                    var value = null
-                    var key = params[0].toUpperCase()
-                    if (/^\-*\d+\.\d+$/.test(params[1])) {
-                            value = parseFloat(params[1])
-                            if (i==0){
-                                    fieldsY.push(key)
-                                    fieldsAxisType[key] = 'Numeric'
-                                }
-                        }
-                    else if (/^\-*\d+$/.test(params[1])) {
-                            value = parseInt(params[1])
-                            if (i==0){
-                                    fieldsY.push(key)
-                                    fieldsAxisType[key] = 'Numeric'
-                                }
-                        }
-                    else if (/^\d+\-\d+\-\d+\-*\d\s\d+:\d+$/.test(params[1])) { 
-                            value = Date.parseDate(params[1],"Y-m-d H:i") 
-                            if (i==0){
-                                    fieldsX.push(key)
-                                    fieldsAxisType[key] = 'Category' //TODO Time
-                                }
-                        }
-                    if(value != null){
-                            h[key] = value
-                            data.push(h)
-                        }
+
+                //server can return enything...
+                if(t[1]){
+
+                  var h = { name: t[0].split("'")[1] }
+                  var tt = t[1].split("\n")
+                  for(var j = 0; j<tt.length; j+=1) {
+                      var params = tt[j].split(" = ")
+                      var value = null
+                      var key = params[0].toUpperCase()
+                      if (/^\-*\d+\.\d+$/.test(params[1])) {
+                              value = parseFloat(params[1])
+                              if (i==0){
+                                      fieldsY.push(key)
+                                      fieldsAxisType[key] = 'Numeric'
+                                  }
+                          }
+                      else if (/^\-*\d+$/.test(params[1])) {
+                              value = parseInt(params[1])
+                              if (i==0){
+                                      fieldsY.push(key)
+                                      fieldsAxisType[key] = 'Numeric'
+                                  }
+                          }
+                      else if (/^\d+\-\d+\-\d+\-*\d\s\d+:\d+$/.test(params[1])) { 
+                              value = Date.parseDate(params[1],"Y-m-d H:i") 
+                              if (i==0){
+                                      fieldsX.push(key)
+                                      fieldsAxisType[key] = 'Category' //TODO Time
+                                  }
+                          }
+                      if(value != null){
+                              h[key] = value
+                          }
+                  }
+
+                  data.push(h)
+
                 }
+
             })
 
         allFields = Ext4.Array.union(fieldsX, fieldsY)
