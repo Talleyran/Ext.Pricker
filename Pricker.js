@@ -71,12 +71,27 @@ GeoExt.Pricker = (function() {
         this.layers = []
         if(options.layers != undefined) this.layers = options.layers
 
+
+        /** api: config[layersStoreData]
+         *  ``Ext4.Store``
+         */
+        this.layersStoreData = []
+        this.setLayers()
+
+
         /** api: config[getInfoUrl]
          *  ``String``
          *  Path for for GetFeatureInfo request
          */
         this.getInfoUrl = '/'
         if(options.getInfoUrl != undefined) this.getInfoUrl = options.getInfoUrl
+
+        /** api: config[saveChartUrl]
+         *  ``String``
+         *  Path for for saving chart's parametrs
+         */
+        this.saveChartUrl = '/'
+        if(options.saveChartUrl != undefined) this.saveChartUrl = options.saveChartUrl
 
         var handlerOptions = {
                   'single': true,
@@ -97,10 +112,21 @@ GeoExt.Pricker = (function() {
          */
         this.prickerParser = new GeoExt.PrickerParser(options.aliaseUrl, options.nameTitleAlias)
 
-        this.prickerParser.doOnParce(this.show_chart, this)
+        this.prickerParser.doOnParce(this.showChart, this)
         this.handler.draw = function(){}
         this.map.addControl(this.handler)
         this.activate()
+
+        this.typeStoreData = [ {id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" } ]
+
+        this.chartField1 = null
+        this.chartField2 = null
+        this.chartType = null
+
+        this.chartAliases = null
+        this.fieldsAxisType = null
+
+        this.lastQueryParams = {}
 
         //TODO
         //var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
@@ -110,25 +136,40 @@ GeoExt.Pricker = (function() {
 
     }
 
-    /** private: method[show_chart]
+    /** private: method[setStores]
      *  ``Object``
      *  Create and show window with charts.
      */
-    Pricker.prototype.show_chart = function(json) {
-        if ( this.prickerWindow ) this.prickerWindow.destroy()
-        this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow', Ext4.Object.merge({
-                 chartField1: json.fieldsXData[0].id
-                ,chartField2: json.fieldsYData[0].id
-                ,chartAliases: json.aliases
-                ,fieldsAxisType: json.fieldsAxisType
-            },this.chartOptions))
+    Pricker.prototype.setStores = function(json) {
 
-        FieldStoreX.loadData(json.fieldsXData)
-        FieldStoreY.loadData(json.fieldsYData)
-        TypeStore.loadData([ {id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" } ])
-        ChartStore = Ext4.create('Ext.data.JsonStore', { fields: json.allFields } )
-        ChartStore.loadData(json.data)
+        this.chartStoreFields = json.allFields
+
+        this.chartStoreData = json.data
+        this.fieldXStoreData = json.fieldsXData
+        this.fieldYStoreData = json.fieldsYData
+
+        this.chartAliases = json.aliases
+        this.fieldsAxisType = json.fieldsAxisType
+        this.layersStoreData = this.layersStoreData
+
+    }
+
+    /** private: method[showChart]
+     *  ``Object``
+     *  Create and show window with charts.
+     */
+    Pricker.prototype.showChart = function(json) {
+        this.setStores(json)
+
+        if ( this.prickerWindow && !this.prickerWindow.isVisible() ) this.prickerWindow.destroy()
+
+        if ( !this.prickerWindow || !this.prickerWindow.isVisible() ) this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow', Ext4.Object.merge({
+                pricker: this
+            },this.chartOptions))
+        else this.prickerWindow.setChart()
+
         this.prickerWindow.show()
+
     }
 
     /** api: method[activate]
@@ -138,6 +179,7 @@ GeoExt.Pricker = (function() {
         this.handler.activate()
     }
 
+
     /** api: method[deactivate]
      *  Deactivate event handler.
      */
@@ -145,18 +187,27 @@ GeoExt.Pricker = (function() {
         this.handler.deactivate()
     }
 
+
+    /** api: method[setLayers]
+     *  Update data in layersStoreData.
+     */
+    Pricker.prototype.setLayers = function() {
+        var t = []
+
+        Ext4.Array.each(this.layers, function(layer,i){
+            t.push( {name: layer} )
+          })
+
+        this.layersStoreData = t
+
+    }
+
     /** private: method[prick]
      *  ``Object``
-     *  Send GetFeatureInfo request then
-     *  pass data to parser.
+     *  Prepeare parametrs for prickQuery
      */
     Pricker.prototype.prick = function(e) {
-            var queryLayers = []
-            Ext4.Array.each(this.layers, function(el,i){
-                    queryLayers.push(el.params.LAYERS)
-                })
-            var queryLayersString = queryLayers.join(',')
-                ,splitedQueryLayers = queryLayersString.split(',')
+
             var params = {
                     REQUEST: "GetFeatureInfo"
                     ,SERVICE: "WMS"
@@ -171,44 +222,67 @@ GeoExt.Pricker = (function() {
                     ,WIDTH: this.map.size.w
                     ,HEIGHT: this.map.size.h
                 }
-            var responds = []
-                ,failRespondCount = 0
-            Ext4.Array.each(splitedQueryLayers, function(el,i){
-                    params.QUERY_LAYERS = el
-                    params.LAYERS = el
-                    Ext4.Ajax.request({
-                             method: 'post'
-                            ,url: this.getInfoUrl
-                            ,params: params
-                            ,scope: this
-                            ,success: function(respond){
-                                    responds.push(respond)
-                                    //.responseText
-                                    if(responds.length - failRespondCount == splitedQueryLayers.length){
-                                            this.prickerParser.parse(
-                                                    Ext4.Array.sort(responds,function(a,b,c){
-                                                            return a.requestId > b.requestId
-                                                        })
-                                                    .map(function(el){return el.responseText})
-                                                )
-                                        }
-                                }
-                            ,failure: function(er){
-                                    failRespondCount += 1
-                                    //console.log( er )
-                                }
-                        })
-                },this)
 
+            this.lastQueryParams = params
+
+            this.prickQuery(params)
 
         }
+
+    /** private: method[lastPrick]
+     *  ``Object``
+     *  Send GetFeatureInfo request then
+     *  pass data to parser with last parametrs.
+     */
+    Pricker.prototype.lastPrick = function() {this.prickQuery(this.lastQueryParams)}
+
+
+    /** private: method[prickQuery]
+     *  ``Object``
+     *  Send GetFeatureInfo request then
+     *  pass data to parser with last parametrs.
+     */
+    Pricker.prototype.prickQuery = function(params) {
+      var responds = []
+          ,failRespondCount = 0
+
+      Ext4.Array.each(this.layersStoreData, function(el,i){
+              params.QUERY_LAYERS = el.name
+              params.LAYERS = el.name
+              Ext4.Ajax.request({
+                       method: 'post'
+                      ,url: this.getInfoUrl
+                      ,params: params
+                      ,scope: this
+                      ,success: function(respond){
+                              responds.push(respond)
+                              //.responseText
+                              if(responds.length - failRespondCount == this.layersStoreData.length){
+                                      this.prickerParser.parse(
+                                              Ext4.Array.sort(responds,function(a,b,c){
+                                                      return a.requestId > b.requestId
+                                                  })
+                                              .map(function(em){return em.responseText})
+                                          )
+                                  }
+                          }
+                      ,failure: function(er){
+                              failRespondCount += 1
+                              //console.log( er )
+                          }
+                  })
+          },this)
+      }
 
     /** api: method[addLayer]
      *  ``OpenLayers.Layer``
      *  Add layer for GetFeatureInfo request.
      */
     Pricker.prototype.addLayer = function(layer) {
-        this.layers.push(layer)
+        Ext4.Array.each( layer.split(','),function(el,i){
+          if(this.layers.indexOf(el)==-1) this.layers.push(el)
+        }, this)
+        this.setLayers()
     }
 
     /** api: method[removeLayer]
@@ -217,9 +291,41 @@ GeoExt.Pricker = (function() {
      */
     Pricker.prototype.removeLayer = function(layer) {
         var i = this.layers.indexOf(layer)
-        this.layers.splice(i,i)
+
+        if(i==0) this.layers.shift() 
+        else this.layers.splice(i,i)
+
+        this.setLayers()
+    }
+
+    /** api: method[saveChart]
+     */
+    Pricker.prototype.saveChart = function() { 
+      Ext4.Ajax.request({
+               method: 'post'
+              ,url: this.saveChartUrl
+              ,params: Ext4.encode({ chartField1: this.prickerWindow.chartField1
+                  ,chartField2: this.prickerWindow.chartField2
+                  ,chartType: this.prickerWindow.chartType
+                  ,queryParams: this.lastQueryParams
+                  ,layers: this.layers })
+          })
+    }
+
+    /** api: method[loadChart]
+     */
+    Pricker.prototype.loadChart = function(params) {
+      console.log(this)
+      this.chartField1 = params.chartField1
+      this.chartField2 = params.chartField2
+      this.chartType = params.chartType
+      this.layers = params.layers
+      this.setLayers()
+      this.prickQuery(params.queryParams)
     }
 
     return Pricker
 
 })()
+
+

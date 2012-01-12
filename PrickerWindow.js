@@ -9,7 +9,7 @@
  */
 
 
-Ext.namespace("GeoExt");
+Ext4.namespace("GeoExt");
 
 /** api: example
  *  Sample code to create a popup:
@@ -54,7 +54,7 @@ Ext4.define('GeoExt.PrickerWindow', {
 
     ,renderTo: Ext4.getBody()
 
-    ,layout: 'fit'
+    //,layout: 'fit'
 
     /** api: config[chartAliases]
      *  ``Object`` Hash with aliases for axis title.
@@ -100,36 +100,195 @@ Ext4.define('GeoExt.PrickerWindow', {
      *  ``String`` Default chart type.
      */
     ,chartType: 'area'
-    ,tbar:[
-             {xtype: 'combo',
-                 store: FieldStoreX
-                ,queryMode: 'local'
-                ,displayField: 'name'
-                ,valueField: 'id'
-                }
-            ,{xtype: 'combo',
-                 store: FieldStoreY
-                ,queryMode: 'local'
-                ,displayField: 'name'
-                ,valueField: 'id'
-                }
-            ,{xtype: 'combo',
-                 store: TypeStore
-                ,queryMode: 'local'
-                ,displayField: 'name'
-                ,valueField: 'id'
-                }
-        ]
 
     ,initComponent: function() {
+      //this.editing = Ext4.create('Ext.grid.plugin.CellEditing')
+
+          Ext4.apply(this, {
+
+            layout: {
+                type: 'hbox'
+            }
+
+            ,tbar:[
+                    {xtype: 'panel'
+                     ,flex: 1
+                     ,frame : false
+                     ,border: false
+                     ,bodyStyle: 'background:transparent'
+                     ,items:[
+                       {xtype: 'panel'
+                       ,frame : false
+                       ,border: false
+                       ,bodyStyle: 'background:transparent'
+                        ,layout: 'column'
+                         ,items:[
+                             {xtype: 'combo',
+                                 store: Ext4.create('Ext.data.Store', { fields: ['id', 'name'] })
+                                ,id: 'field_x'
+                                ,queryMode: 'local'
+                                ,displayField: 'name'
+                                ,valueField: 'id'
+                                }
+                            ,{xtype: 'combo',
+                                 store: Ext4.create('Ext.data.Store', { fields: ['id', 'name'] })
+                                ,id: 'field_y'
+                                ,queryMode: 'local'
+                                ,displayField: 'name'
+                                ,valueField: 'id'
+                                }
+                            ,{xtype: 'combo',
+                                 store: Ext4.create('Ext.data.Store', { fields: ['id', 'name'] })
+                                ,id: 'chart_type'
+                                ,queryMode: 'local'
+                                ,displayField: 'name'
+                                ,valueField: 'id'
+                                }
+                          ]}
+                     ,{xtype: 'panel'
+                       ,frame : false
+                       ,border: false
+                       ,bodyStyle: 'background:transparent'
+                        ,layout: 'column'
+                         ,items:[
+                              {
+                                 xtype: 'textfield'
+                                ,id: 'layers'
+                                ,fieldLabel: 'Layers'
+                                ,allowBlank: false  // requires a non-empty value
+                                }
+                              ,{
+                                iconCls: 'icon-add',
+                                text: 'Add',
+                                scope: this,
+                                handler: this.onAddClick
+                                }
+                          ]}
+                  ]
+                  ,buttons:[
+                    {
+                      text: 'Save'
+                      ,scope: this.pricker
+                      ,handler: this.pricker.saveChart
+                    }
+                  ]}
+                ]
+
+            ,items: [
+              {
+                xtype: 'grid',
+                requires: [
+                    'Ext.grid.plugin.CellEditing',
+                    'Ext.form.field.Text',
+                    'Ext.toolbar.TextItem'
+                ],
+                //plugins: [this.editing],
+                id: 'layer_grid',
+                width: 200,
+                //frame: true,
+                store: Ext4.create('Ext.data.Store', { fields: ['name', 'layer' ] }),
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    items: [{
+                        iconCls: 'icon-add',
+                        text: 'Add',
+                        scope: this,
+                        handler: this.onAddClick
+                    }, {
+                        id: 'delete',
+                        iconCls: 'icon-delete',
+                        text: 'Delete',
+                        disabled: true,
+                        itemId: 'delete',
+                        scope: this,
+                        handler: this.onDeleteClick
+                    }]
+                }],
+                columns: [{
+                    text: 'Name',
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'name'
+                }]
+              }
+            ]
+        })
+
+
+
             this.callParent(arguments)
-            this.getDockedComponent(0).items.get(0).on('select', this.xFieldSelect, this )
-            this.getDockedComponent(0).items.get(0).fieldLabel = this.fieldComboName1
-            this.getDockedComponent(0).items.get(1).on('select', this.yFieldSelect, this )
-            this.getDockedComponent(0).items.get(1).fieldLabel = this.fieldComboName2
-            this.getDockedComponent(0).items.get(2).on('select', this.typeSelect, this )
-            this.getDockedComponent(0).items.get(2).fieldLabel = this.typeComboName
+            Ext4.getCmp('field_x').on('select', this.xFieldSelect, this )
+            Ext4.getCmp('field_x').fieldLabel = this.fieldComboName1
+            Ext4.getCmp('field_y').on('select', this.yFieldSelect, this )
+            Ext4.getCmp('field_y').fieldLabel = this.fieldComboName2
+            Ext4.getCmp('chart_type').on('select', this.typeSelect, this )
+            Ext4.getCmp('chart_type').fieldLabel = this.typeComboName
+
+            this.gridStore = Ext4.getCmp('layer_grid').store
+            this.gridStore.loadData(this.pricker.layersStoreData)
+            Ext4.getCmp('layer_grid').getSelectionModel().on('selectionchange', this.onSelectChange, this);
+
+
         }
+
+
+
+    ,onSelectChange: function(selModel, selections){
+        Ext4.getCmp('delete').setDisabled(selections.length === 0);
+    }
+
+    ,onDeleteClick: function(){
+        var selection = Ext4.getCmp('layer_grid').getView().getSelectionModel().getSelection()[0];
+        if (selection) {
+            this.pricker.removeLayer(selection.data.name)
+            this.gridStore.loadData(this.pricker.layersStoreData)
+            this.pricker.lastPrick()
+            //this.setChart()
+        }
+    }
+
+    ,onAddClick: function(){
+
+        this.pricker.addLayer(
+          //new OpenLayers.Layer.WMS(Ext4.getCmp('name').getValue(), Ext4.getCmp('wms').getValue(), {layers: Ext4.getCmp('layers').getValue()})
+          Ext4.getCmp('layers').getValue()
+        )
+
+        this.gridStore.loadData(this.pricker.layersStoreData)
+
+        Ext4.getCmp('layers').setValue('')
+
+        this.pricker.lastPrick()
+        //this.setChart()
+
+    }
+
+    ,prepareChartFields: function() {
+
+        if(this.pricker.chartField1) { this.chartField1 = this.pricker.chartField1; this.pricker.chartField1=null }
+        else if(!this.chartField1) this.chartField1 = this.pricker.fieldXStoreData[0].id
+
+        if(this.pricker.chartField2) { this.chartField2 = this.pricker.chartField2; this.pricker.chartField2=null }
+        else if(!this.chartField2) this.chartField2 = this.pricker.fieldYStoreData[0].id
+
+        if(this.pricker.chartType) { this.chartType = this.pricker.chartType; this.pricker.chartType=null }
+        else if(!this.chartType) this.chartType = this.pricker.typeStoreData[0].id
+
+      }
+
+    ,prepareChartStores: function() {
+
+        this.chartStore = Ext4.create('Ext.data.JsonStore', { fields: this.pricker.chartStoreFields } )
+        this.chartStore.loadData(this.pricker.chartStoreData)
+      }
+
+    ,prepareComboStores: function() {
+        Ext4.getCmp('field_x').store.loadData(this.pricker.fieldXStoreData)
+        Ext4.getCmp('field_y').store.loadData(this.pricker.fieldYStoreData)
+        Ext4.getCmp('chart_type').store.loadData(this.pricker.typeStoreData)
+      }
+
+
 
     /** api: method[chartType]
      *  Show chart window
@@ -148,14 +307,14 @@ Ext4.define('GeoExt.PrickerWindow', {
      */
     ,chartAxes: function(type,field1,field2){
         var title1 = this.defaultAxisTitle1
-        if(this.chartAliases[field1]) title1=this.chartAliases[field1]
+        if(this.pricker.chartAliases[field1]) title1=this.pricker.chartAliases[field1]
         var title2 = this.defaultAxisTitle2
-        if(this.chartAliases[field2]) title2=this.chartAliases[field2]
+        if(this.pricker.chartAliases[field2]) title2=this.pricker.chartAliases[field2]
 
         var axisType1 = 'Category'
-        if(this.fieldsAxisType[field1]) axisType1=this.fieldsAxisType[field1]
+        if(this.pricker.fieldsAxisType[field1]) axisType1=this.pricker.fieldsAxisType[field1]
         var axisType2 = 'Numeric'
-        if(this.fieldsAxisType[field2]) axisType2=this.fieldsAxisType[field2]
+        if(this.pricker.fieldsAxisType[field2]) axisType2=this.pricker.fieldsAxisType[field2]
 
         return [
                 {
@@ -211,8 +370,12 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,chartOptions: function(type,field1,field2) {
             return {
                      style: 'background:#fff'
+                    ,id: 'chart'
+                    //,columnWidth: .75
+                    ,height: 300
+                    ,width: 600
                     ,animate: true
-                    ,store: ChartStore
+                    ,store: this.chartStore
                     ,axes: this.chartAxes(type,field1,field2)
                     ,series: this.chartSeries(type,field1,field2)
                 }
@@ -222,17 +385,19 @@ Ext4.define('GeoExt.PrickerWindow', {
      *  Iitialize Chart
      */
     ,setChart: function() {
-            this.removeAll(true)
-            this.add(Ext4.create('Ext.chart.Chart', this.chartOptions(this.chartType, this.chartField1, this.chartField2)))
+
+            this.prepareChartStores()
+            this.prepareChartFields()
+            this.prepareComboStores()
+
+            if(Ext4.getCmp('chart')){
+              this.remove(Ext4.getCmp('chart'))
+            }
+
+            var chart = Ext4.create('Ext.chart.Chart', this.chartOptions(this.chartType, this.chartField1, this.chartField2))
+            this.add(chart)
         }
 
-    /** api: method[saveChart]
-     */
-    ,saveChart: function() { /*TODO*/ }
-
-    /** api: method[loadChart]
-     */
-    ,loadChart: function() { /*TODO*/ }
 
     /** private: method[typeSelect]
      *  Type combobox callback on select.
