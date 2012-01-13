@@ -256,8 +256,7 @@ GeoExt.Pricker = (function() {
                       ,scope: this
                       ,success: function(respond){
                               responds.push(respond)
-                              //.responseText
-                              if(responds.length - failRespondCount == this.layersStoreData.length){
+                              if(responds.length == this.layersStoreData.length - failRespondCount){
                                       this.prickerParser.parse(
                                               Ext4.Array.sort(responds,function(a,b){
                                                       return a.requestId > b.requestId
@@ -268,8 +267,16 @@ GeoExt.Pricker = (function() {
                           }
                       ,failure: function(er){
                               failRespondCount += 1
-                              //console.log( er )
+                              if(responds.length == this.layersStoreData.length - failRespondCount){
+                                      this.prickerParser.parse(
+                                              Ext4.Array.sort(responds,function(a,b){
+                                                      return a.requestId > b.requestId
+                                                  })
+                                              .map(function(em){return em.responseText})
+                                          )
+                                  }
                           }
+                      ,
                   })
           },this)
       }
