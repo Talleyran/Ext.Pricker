@@ -244,7 +244,6 @@ Ext4.define('GeoExt.PrickerWindow', {
             this.pricker.removeLayer(selection.data.name)
             this.gridStore.loadData(this.pricker.layersStoreData)
             this.pricker.lastPrick()
-            //this.setChart()
         }
     }
 
@@ -260,7 +259,6 @@ Ext4.define('GeoExt.PrickerWindow', {
         Ext4.getCmp('layers').setValue('')
 
         this.pricker.lastPrick()
-        //this.setChart()
 
     }
 
@@ -329,7 +327,7 @@ Ext4.define('GeoExt.PrickerWindow', {
                     ,grid: true
                     ,label: {
                             rotate: {
-                                    degrees: 315
+                                    degrees: -20
                                 }
                         }
                 }
@@ -374,10 +372,10 @@ Ext4.define('GeoExt.PrickerWindow', {
      */
     ,chartOptions: function(type,field1,field2) {
             return {
-                     style: 'background:#fff'
-                    ,id: 'chart'
+                    id: 'chart'
                     ,flex: 1
                     ,animate: true
+                    ,style: 'background:#fff'
                     ,store: this.chartStore
                     ,axes: this.chartAxes(type,field1,field2)
                     ,series: this.chartSeries(type,field1,field2)
