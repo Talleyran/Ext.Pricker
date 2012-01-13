@@ -376,10 +376,7 @@ Ext4.define('GeoExt.PrickerWindow', {
             return {
                      style: 'background:#fff'
                     ,id: 'chart'
-                    //,columnWidth: 1
                     ,flex: 1
-                    //,height: '100%'
-                    //,width: 500
                     ,animate: true
                     ,store: this.chartStore
                     ,axes: this.chartAxes(type,field1,field2)

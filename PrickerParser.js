@@ -92,7 +92,8 @@ GeoExt.PrickerParser = (function() {
                                   }
                           }
                       else if (/^\d+\-\d+\-\d+\-*\d\s\d+:\d+$/.test(params[1])) { 
-                              value = Date.parseDate(params[1],"Y-m-d H:i") 
+                              //value = Date.parseDate(params[1],"Y-m-d H:i") 
+                              value = params[1]
                               if (i==0){
                                       fieldsX.push(key)
                                       fieldsAxisType[key] = 'Category' //TODO Time
