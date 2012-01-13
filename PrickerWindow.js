@@ -273,6 +273,15 @@ Ext4.define('GeoExt.PrickerWindow', {
         if(this.pricker.chartType) { this.chartType = this.pricker.chartType; this.pricker.chartType=null }
         else if(!this.chartType) this.chartType = this.pricker.typeStoreData[0].id
 
+        s = Ext4.Array.map(this.pricker.chartStoreData,function(el,i){
+            return el[this.chartField1]
+          },this)
+        if(s.length > Ext4.Array.unique(s).length){
+            Ext4.Array.each(this.pricker.chartStoreData,function(el,i){
+                return this.pricker.chartStoreData[i][this.chartField1] = el[this.chartField1] + '_' + i
+              },this)
+          }
+
       }
 
     ,prepareChartStores: function() {
@@ -317,7 +326,6 @@ Ext4.define('GeoExt.PrickerWindow', {
 
         //var values = Ext4.Array.map(this.pricker.chartStoreData,function(el,i){return el[field2]})
         //,sorted_values = Ext4.Array.sort(values,function(a,b){return a > b})[0]
-
         return [
                 {
                      type: axisType1
@@ -387,8 +395,8 @@ Ext4.define('GeoExt.PrickerWindow', {
      */
     ,setChart: function() {
 
-            this.prepareChartStores()
             this.prepareChartFields()
+            this.prepareChartStores()
             this.prepareComboStores()
 
             if(Ext4.getCmp('chart')){
