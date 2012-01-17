@@ -28,35 +28,101 @@ gxp.plugins.PrickerTool = Ext.extend(gxp.plugins.Tool, {
     ptype: "gxp_pricker_tool",
     
     /** api: config[tooltip]
-* ``String``
-* Text for zoom previous action tooltip (i18n).
-*/
-    tooltip: "Zoom To Previous Extent",
+    * ``String``
+    * Text for zoom previous action tooltip (i18n).
+    */
+    tooltip: "Pricker",
 
-    
+    /** api: config[tooltip]
+    * ``String``
+    * Text for zoom previous action tooltip (i18n).
+    */
+    menuText: "Pricker",
+
+    /** api: config[chartOptions]
+     *  ``Object``
+     *  Attributes for ``PrickerWindow`` intialization
+     *  layer.
+     */
+    chartOptions: {},
+
+    /** api: config[format]
+     *  ``String``
+     *  parameter for GetFeatureInfo request
+     */
+    format: 'text/plain',
+
+    /** api: config[buffer]
+     *  ``Integer``
+     *  parameter for GetFeatureInfo request
+     */
+    buffer: 3,
+
+    /** api: config[layers]
+     *  ``Array``
+     *  ``OpenLayers.layer`` used for GetFeatureInfo request
+     */
+    layers: [],
+
+    /** api: config[layersStoreData]
+     *  ``Ext4.Store``
+     */
+    layersStoreData: [],
+
+    /** api: config[getInfoUrl]
+     *  ``String``
+     *  Path for for GetFeatureInfo request
+     */
+    getInfoUrl: '/',
+
+    /** api: config[saveChartUrl]
+     *  ``String``
+     *  Path for for saving chart's parametrs
+     */
+    saveChartUrl: '/',
+
+    /** api: config[aliaseUrl]
+     *  ``String``
+     *  Path for for aliaseUrl request
+     */
+    aliaseUrl: '/',
+
+    /** api: config[nameTitleAlias]
+     *  Title for field with layers name.
+     */
+    nameTitleAlias: 'name'
+
+
     /** private: method[constructor]
-*/
+    */
     constructor: function(config) {
         gxp.plugins.PrickerTool.superclass.constructor.apply(this, arguments);
     },
 
     /** api: method[addActions]
-*/
+    */
     addActions: function() {
-        var historyControl = new OpenLayers.Control.PrickerTool();
-        this.target.mapPanel.map.addControl(historyControl);
+        var pricker = new OpenLayers.Control.PrickerTool();
+
+        var pricker = new GeoExt.Pricker({
+             map: this.target.mapPanel.map
+             ,format: this.format
+             ,buffer: this.buffer
+             ,layers: this.layers
+             ,layersStoreData: this.layersStoreData
+             ,getInfoUrl: this.getInfoUrl
+             ,saveChartUrl: this.saveChartUrl
+             ,aliaseUrl: this.aliaseUrl
+             ,nameTitleAlias: this.nameTitleAlias
+             ,chartOptions: this.chartOptions
+        })
+
         var actions = [new GeoExt.Action({
-            menuText: this.previousMenuText,
+            menuText: this.menuText,
             iconCls: "gxp-icon-zoom-previous",
-            tooltip: this.previousTooltip,
+            tooltip: this.tooltip,
             disabled: true,
-            control: historyControl.previous
-        }), new GeoExt.Action({
-            menuText: this.nextMenuText,
-            iconCls: "gxp-icon-zoom-next",
-            tooltip: this.nextTooltip,
-            disabled: true,
-            control: historyControl.next
+            control: pricker
         })];
         return gxp.plugins.PrickerTool.superclass.addActions.apply(this, [actions]);
     }
