@@ -24,8 +24,8 @@ Ext.namespace("gxp.plugins");
 */
 gxp.plugins.PrickerTool = Ext.extend(gxp.plugins.Tool, {
     
-    /** api: ptype = gxp_pricker_tool */
-    ptype: "gxp_pricker_tool",
+    /** api: ptype = gxp_prickertool */
+    ptype: "gxp_prickertool",
     
     /** api: config[tooltip]
     * ``String``
@@ -90,23 +90,13 @@ gxp.plugins.PrickerTool = Ext.extend(gxp.plugins.Tool, {
     /** api: config[nameTitleAlias]
      *  Title for field with layers name.
      */
-    nameTitleAlias: 'name'
-
-
-    /** private: method[constructor]
-    */
-    constructor: function(config) {
-        gxp.plugins.PrickerTool.superclass.constructor.apply(this, arguments);
-    },
+    nameTitleAlias: 'name',
 
     /** api: method[addActions]
     */
     addActions: function() {
-        var pricker = new OpenLayers.Control.PrickerTool();
-
         var pricker = new GeoExt.Pricker({
-             map: this.target.mapPanel.map
-             ,format: this.format
+             format: this.format
              ,buffer: this.buffer
              ,layers: this.layers
              ,layersStoreData: this.layersStoreData
@@ -116,17 +106,18 @@ gxp.plugins.PrickerTool = Ext.extend(gxp.plugins.Tool, {
              ,nameTitleAlias: this.nameTitleAlias
              ,chartOptions: this.chartOptions
         })
+        this.target.mapPanel.map.addControl(pricker)
 
         var actions = [new GeoExt.Action({
             menuText: this.menuText,
-            iconCls: "gxp-icon-zoom-previous",
+            iconCls: "gxp-icon-pricker",
             tooltip: this.tooltip,
-            disabled: true,
-            control: pricker
+            control: pricker,
+            enableToggle: true
         })];
         return gxp.plugins.PrickerTool.superclass.addActions.apply(this, [actions]);
     }
-        
+
 });
 
 Ext.preg(gxp.plugins.PrickerTool.prototype.ptype, gxp.plugins.PrickerTool);

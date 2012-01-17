@@ -7,6 +7,10 @@ get '/' do
     File.open(File.join(settings.public_folder, 'Ext.Pricker/examples/example.html')).read
 end
 
+get '/gxp' do
+    File.open(File.join(settings.public_folder, 'Ext.Pricker/examples/viewer-lazy.html')).read
+end
+
 get '/OceanViewer2/translate' do
     puts '----------------------------'
     p params

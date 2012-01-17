@@ -23,8 +23,7 @@ Ext4.onReady(function() {
     map.addControl(new OpenLayers.Control.LayerSwitcher())
 
     var pricker = new GeoExt.Pricker({
-         map: map
-        ,layers: layers_names //adding layers
+        layers: layers_names //adding layers
         ,aliaseUrl: '/OceanViewer2/translate'
         ,getInfoUrl: '/resources/wms'
         ,nameTitleAlias: 'назв.слоя'
@@ -39,6 +38,9 @@ Ext4.onReady(function() {
                 //,defaultAxisTitle2...
             }
     })
+
+    map.addControl(pricker)
+    pricker.activate()
 
     map.setCenter(new OpenLayers.LonLat(13306157, 5119446),5)
 

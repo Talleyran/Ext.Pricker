@@ -43,6 +43,12 @@ GeoExt.Pricker = (function() {
          */
         this.map = options.map
 
+        /** private: config[events]
+         *  ``OpenLayers.Events``
+         *  Observer
+         */
+        this.events = new OpenLayers.Events(this, null, ["activate", "deactivate"])
+
         /** api: config[chartOptions]
          *  ``Object``
          *  Attributes for ``PrickerWindow`` intialization
@@ -114,8 +120,6 @@ GeoExt.Pricker = (function() {
 
         this.prickerParser.doOnParce(this.showChart, this)
         this.handler.draw = function(){}
-        this.map.addControl(this.handler)
-        this.activate()
 
         this.typeStoreData = [ {id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" } ]
 
@@ -127,6 +131,7 @@ GeoExt.Pricker = (function() {
         this.fieldsAxisType = null
 
         this.lastQueryParams = {}
+
 
         //TODO
         //var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
@@ -177,6 +182,7 @@ GeoExt.Pricker = (function() {
      */
     Pricker.prototype.activate = function() {
         this.handler.activate()
+        return this.events.triggerEvent("activate");
     }
 
 
@@ -185,8 +191,22 @@ GeoExt.Pricker = (function() {
      */
     Pricker.prototype.deactivate = function() {
         this.handler.deactivate()
+        return this.events.triggerEvent("deactivate");
     }
 
+    /** api: method[setMap]
+     *  Set map.
+     */
+    Pricker.prototype.setMap = function(new_map) {
+      if(this.map) this.map.removeControl(this.handler)
+      this.map = new_map
+      this.map.addControl(this.handler)
+    }
+
+    /** api: method[draw]
+     *  Empty draw.
+     */
+    Pricker.prototype.draw = function(){}
 
     /** api: method[setLayers]
      *  Update data in layersStoreData.
@@ -215,7 +235,7 @@ GeoExt.Pricker = (function() {
                     ,INFO_FORMAT: this.format
                     ,FEATURE_COUNT: 1
                     //,BUFFER: this.buffer
-                    ,srs: this.map.layers[0].params.SRS
+                    ,srs: this.map.baseLayer.projection.projCode
                     ,BBOX: this.map.getExtent().toBBOX()
                     ,X: e.xy.x
                     ,Y: e.xy.y

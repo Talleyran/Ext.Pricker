@@ -1,7 +1,7 @@
+<!DOCTYPE html>
 <html>
     <head>
-        <title>GeoExt Pricker Example</title>
-        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <title>Lazy Viewer</title>
 
         <!--openlayers-->
         <script src="/OpenLayers-2.11/OpenLayers.js"></script>
@@ -13,6 +13,7 @@
 
         <!--geoext-->
         <script type="text/javascript" src="/gxp/build/script/GeoExt.js"></script>
+        <script type="text/javascript" src="/gxp/externals/geoext/lib/GeoExt/widgets/Action.js"></script>
         <link rel="stylesheet" type="text/css" href="/gxp/externals/geoext/resources/css/geoext-all.css" />
 
         <!--gxp-->
@@ -20,19 +21,25 @@
         <link rel="stylesheet" type="text/css" href="/gxp/src/theme/all.css"/>
 
         <!--extjs4-->
-        <script type="text/javascript" src="/ext-4.0.7-gpl/builds/ext-all-sandbox.js"></script>
+        <script type="text/javascript" src="/ext-4.0.7-gpl/builds/ext-all-sandbox-debug.js"></script>
         <link rel="stylesheet" type="text/css" href="/ext-4.0.7-gpl/resources/css/ext-sandbox.css" />
 
         <!--plugin-->
+        <script type="text/javascript" src="/Ext.Pricker/javascripts/Pricker.js"></script>
         <script type="text/javascript" src="/Ext.Pricker/javascripts/PrickerWindow.js"></script>
         <script type="text/javascript" src="/Ext.Pricker/javascripts/PrickerParser.js"></script>
-        <script type="text/javascript" src="/Ext.Pricker/javascripts/Pricker.js"></script>
+        <script type="text/javascript" src="/Ext.Pricker/javascripts/PrickerTool.js"></script>
 
         <!--example-->
-        <script type="text/javascript" src="/Ext.Pricker/examples/example.js"></script>
+        <script type="text/javascript" src="/Ext.Pricker/examples/viewer-lazy.js"></script>
 
     </head>
     <body>
-        <div id="mappanel"></div>
+        <h1>Lazy Viewer</h1>
+        <p>This example shows a map viewer that takes advantage of a lazy source.  In this case, the capabilities of the remote GeoServer are not loaded until you try to explicitly add a layer from that source.</p>
+
+        <p>The js is not minified so it is readable.
+        See <a href="viewer-lazy.js">viewer-lazy.js</a>.</p>
+        
     </body>
 </html>
