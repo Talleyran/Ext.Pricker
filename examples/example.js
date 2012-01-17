@@ -38,7 +38,6 @@ Ext4.onReady(function() {
                 //,defaultAxisTitle2...
             }
     })
-
     map.addControl(pricker)
     pricker.activate()
 

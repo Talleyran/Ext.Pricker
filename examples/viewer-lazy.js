@@ -32,22 +32,24 @@ Ext4.onReady(function() {
                 tbar: [] // we will add buttons to "tree.bbar" later
             },
             outputTarget: "tree-container"
-        }, {
-            ptype: "gxp_addlayers",
-            actionTarget: "tree.tbar"
-        }, {
-            ptype: "gxp_removelayer",
-            actionTarget: ["tree.tbar", "tree.contextMenu"]
-        }, {
-            ptype: "gxp_zoomtoextent",
-            actionTarget: "map.tbar"
-        }, {
-            ptype: "gxp_zoom",
-            actionTarget: "map.tbar"
-        }, {
-            ptype: "gxp_navigationhistory",
-            actionTarget: "map.tbar"
-        }, {
+        },
+        //{
+            //ptype: "gxp_addlayers",
+            //actionTarget: "map.tbar"
+        //}, {
+            //ptype: "gxp_removelayer",
+            //actionTarget: ["map.tbar", "map.contextMenu"]
+        //}, {
+            //ptype: "gxp_zoomtoextent",
+            //actionTarget: "map.tbar"
+        //}, {
+            //ptype: "gxp_zoom",
+            //actionTarget: "map.tbar"
+        //}, {
+            //ptype: "gxp_navigationhistory",
+            //actionTarget: "map.tbar"
+        //},
+        {
             ptype: "gxp_prickertool"
             ,actionTarget: "map.tbar"
             ,layers: [ "ru_hydrometcentre_42:ru_hydrometcentre_42_1","ru_hydrometcentre_42:ru_hydrometcentre_42_2" ]
@@ -61,7 +63,7 @@ Ext4.onReady(function() {
                     ,fieldComboName1: 'В-те знач. по X'
                 }
         }],
-        
+
         // layer sources
         defaultSourceType: "gxp_wmssource",
         sources: {
@@ -69,7 +71,7 @@ Ext4.onReady(function() {
                 ptype: "gxp_googlesource"
             }
         },
-        
+
         // map and layers
         map: {
             id: "map-viewport", // id needed to reference map in items above
