@@ -1,0 +1,13 @@
+.icon-delete {
+    background-image: url((../images/delete.png);
+}
+.icon-add {
+    background-image: url(../images/add.png);
+}
+.icon-save {
+    background-image: url(../images/bullet_disk.png);
+}
+
+.x-btn .gxp-icon-pricker, .x-tree-node .gxp-icon-pricker {
+    background-image: url(../images/chart_curve.png);
+}
