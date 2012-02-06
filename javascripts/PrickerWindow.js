@@ -50,11 +50,22 @@ Ext4.define('GeoExt.PrickerWindow', {
 
     ,maximizable: true
 
+    // Begin i18n
     ,title: 'Area Chart'
+    ,fieldComboName1: 'Choose X field'
+    ,fieldComboName2: 'Choose Y field'
+    ,defaultAxisTitle1: 'X'
+    ,defaultAxisTitle2: 'Y'
+    ,typeComboName: 'Choose type'
+    ,addText: 'Add'
+    ,deleteText: 'Delete'
+    ,saveText: 'Save'
+    ,addLayerWinTitle: 'Add layer'
+    ,canselText: 'Cancel'
+    ,okText: 'Ok'
+    // End i18n.
 
     ,renderTo: Ext4.getBody()
-
-    //,layout: 'fit'
 
     /** api: config[chartAliases]
      *  ``Object`` Hash with aliases for axis title.
@@ -71,35 +82,12 @@ Ext4.define('GeoExt.PrickerWindow', {
      */
     ,chartField2: ''
 
-    /** api: config[defaultAxisTitle1]
-     *  ``String`` Default title for axis1.
-     */
-    ,defaultAxisTitle1: 'X'
-
-    /** api: config[defaultAxisTitle2]
-     *  ``String`` Default title for axis2.
-     */
-    ,defaultAxisTitle2: 'Y'
-
-    /** api: config[fieldComboName1]
-     *  ``String`` Default label for axis combobox1.
-     */
-    ,fieldComboName1: 'Choose X field'
-
-    /** api: config[fieldComboName2]
-     *  ``String`` Default label for axis combobox2.
-     */
-    ,fieldComboName2: 'Choose Y field'
-
-    /** api: config[typeComboName]
-     *  ``String`` Default label title for type combobox.
-     */
-    ,typeComboName: 'Choose type'
-
     /** api: config[chartType]
      *  ``String`` Default chart type.
      */
     ,chartType: 'area'
+
+    ,closeAction: 'hide'
 
     ,initComponent: function() {
       //this.editing = Ext4.create('Ext.grid.plugin.CellEditing')
@@ -141,33 +129,8 @@ Ext4.define('GeoExt.PrickerWindow', {
                                 ,valueField: 'id'
                                 }
                           ]}
-                     ,{xtype: 'panel'
-                       ,frame : false
-                       ,border: false
-                       ,bodyStyle: 'background:transparent'
-                        ,layout: 'column'
-                         ,items:[
-                              {
-                                 xtype: 'textfield'
-                                ,id: 'layers'
-                                ,fieldLabel: 'Layers'
-                                ,allowBlank: false  // requires a non-empty value
-                                }
-                              ,{
-                                iconCls: 'icon-add',
-                                text: 'Add',
-                                scope: this,
-                                handler: this.onAddClick
-                                }
-                          ]}
-                  ]
-                  ,buttons:[
-                    {
-                      text: 'Save'
-                      ,scope: this.pricker
-                      ,handler: this.pricker.saveChart
-                    }
-                  ]}
+                      ]
+                  }
                 ]
 
             ,layout: {
@@ -178,6 +141,7 @@ Ext4.define('GeoExt.PrickerWindow', {
             ,items: [
               {
                 xtype: 'grid',
+                resizable: true,
                 requires: [
                     'Ext.grid.plugin.CellEditing',
                     'Ext.form.field.Text',
@@ -190,20 +154,29 @@ Ext4.define('GeoExt.PrickerWindow', {
                 store: Ext4.create('Ext.data.Store', { fields: ['name', 'layer' ] }),
                 dockedItems: [{
                     xtype: 'toolbar',
-                    items: [{
-                        iconCls: 'icon-add',
-                        text: 'Add',
-                        scope: this,
-                        handler: this.onAddClick
-                    }, {
-                        id: 'delete',
-                        iconCls: 'icon-delete',
-                        text: 'Delete',
-                        disabled: true,
-                        itemId: 'delete',
-                        scope: this,
-                        handler: this.onDeleteClick
-                    }]
+                    items: [
+                      {
+                          iconCls: 'icon-add',
+                          text: this.addText,
+                          scope: this,
+                          handler: this.onAddClick
+                      }
+                      ,{
+                          id: 'delete',
+                          iconCls: 'icon-delete',
+                          text: this.deleteText,
+                          disabled: true,
+                          itemId: 'delete',
+                          scope: this,
+                          handler: this.onDeleteClick
+                      }
+                      ,{
+                        text: this.saveText
+                        ,iconCls: 'icon-save'
+                        ,scope: this.pricker
+                        ,handler: this.pricker.saveChart
+                      }
+                    ]
                 }],
                 columns: [{
                     text: 'Name',
@@ -249,14 +222,76 @@ Ext4.define('GeoExt.PrickerWindow', {
 
     ,onAddClick: function(){
 
+        if(!this.addLayerWindow){
+          this.addLayerWindow = Ext4.create('Ext.window.Window', {
+              title: this.addLayerWinTitle,
+              height: 100,
+              width: 210,
+              items: [
+                  {
+                      xtype: 'textfield',
+                      id: 'new_layer',
+                      allowBlank: false,
+                      margin: 10,
+                      width: 175
+                  }
+              ],
+              dockedItems: [
+                  {
+                      xtype: 'container',
+                      height: 25,
+                      activeItem: 0,
+                      layout: {
+                          align: 'stretch',
+                          type: 'hbox'
+                      },
+                      dock: 'bottom',
+                      items: [
+                          {
+                              xtype: 'button',
+                              margin: 1,
+                              text: this.canselText,
+                              flex: 1,
+                              region: 'east',
+                              scope: this,
+                              handler: function(){this.addLayerWindow.hide()}
+                          },
+                          {
+                              xtype: 'button',
+                              margin: 1,
+                              text: this.okText,
+                              flex: 1,
+                              region: 'west',
+                              scope: this,
+                              handler: this.addLayer
+                          }
+                      ]
+                  }
+              ]
+          })
+        }
+
+        this.addLayerWindow.show()
+
+                 //xtype: 'textfield'
+                //,id: 'new_layer'
+                //,fieldLabel: 'New layer\'s name'
+                //,allowBlank: false  // requires a non-empty value
+
+
+    }
+
+    ,addLayer: function(){
         this.pricker.addLayer(
           //new OpenLayers.Layer.WMS(Ext4.getCmp('name').getValue(), Ext4.getCmp('wms').getValue(), {layers: Ext4.getCmp('layers').getValue()})
-          Ext4.getCmp('layers').getValue()
+          Ext4.getCmp('new_layer').getValue()
         )
+
+        this.addLayerWindow.hide()
 
         this.gridStore.loadData(this.pricker.layersStoreData)
 
-        Ext4.getCmp('layers').setValue('')
+        Ext4.getCmp('new_layer').setValue('')
 
         this.pricker.lastPrick()
 
@@ -359,16 +394,55 @@ Ext4.define('GeoExt.PrickerWindow', {
      *  Return options for initialize Chart
      */
     ,chartSeries: function(type,field1,field2){
-            return [{
+
+            var common = {
                  type: type
                 ,highlight: false
                 ,axis: 'left'
                 ,xField: field1
                 ,yField: field2
-                ,style: {
-                        opacity: 0.93
-                    }
-            }]
+            }
+
+            if (type == 'line' ) {
+              common.smooth = 3
+              common.label = {
+                field: field2,
+              }
+              common.highlight = true
+              common.tips = { 
+                trackMouse: true, 
+                renderer: function(storeItem, item) {
+                    this.setTitle(storeItem.get(field2))
+                  }
+              }
+            }
+
+            if (type == 'column' ) {
+                common.label = {
+                  contrast: true,
+                  display: 'insideEnd',
+                  field: field2,
+                  color: '#000',
+                  orientation: 'vertical',
+                  'text-anchor': 'middle'
+                }
+            }
+
+            if (type == 'area' ) {
+              common.style = { opacity: 0.5 }
+              common.label = {
+                field: field2,
+              }
+              common.tips = {
+                trackMouse: true,
+                renderer: function(storeItem, item) {
+                    this.setTitle(storeItem.get(field2))
+                  }
+              }
+              common.highlight = true
+            }
+
+            return [common]
         }
 
     /** private: method[chartOptions]
@@ -379,9 +453,13 @@ Ext4.define('GeoExt.PrickerWindow', {
      *  Return options for initialize Chart
      */
     ,chartOptions: function(type,field1,field2) {
+            var themeColor = 'Red'
+            if (type == 'area') themeColor = 'Blue'
+            if (type == 'column') themeColor = 'Sky'
             return {
                     id: 'chart'
                     ,flex: 1
+                    ,theme: themeColor
                     ,animate: true
                     ,style: 'background:#fff'
                     ,store: this.chartStore
