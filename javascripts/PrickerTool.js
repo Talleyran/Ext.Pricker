@@ -26,19 +26,12 @@ gxp.plugins.PrickerTool = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_prickertool */
     ptype: "gxp_prickertool",
-    
-    /** api: config[tooltip]
-    * ``String``
-    * Text for zoom previous action tooltip (i18n).
-    */
+
+    // Begin i18n.
     tooltip: "Pricker",
-
-    /** api: config[tooltip]
-    * ``String``
-    * Text for zoom previous action tooltip (i18n).
-    */
     menuText: "Pricker",
-
+    // End i18n.
+    
     /** api: config[chartOptions]
      *  ``Object``
      *  Attributes for ``PrickerWindow`` intialization
