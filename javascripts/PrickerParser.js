@@ -32,13 +32,12 @@ GeoExt.PrickerParser = (function() {
             this.aliaseUrl = '/'
             if(aliaseUrl != undefined) this.aliaseUrl = aliaseUrl
 
-            /** api: config[nameTitleAlias]
-             *  Title for field with layers name.
-             */
-            this.nameTitleAlias = 'name'
-            if(nameTitleAlias != undefined) this.nameTitleAlias = nameTitleAlias
-
         }
+
+    // Begin i18n
+    PrickerParser.prototype.nameTitleAlias = 'name'
+    // End i18n.
+
 
     /** api: method[chartAxes]
      *  :param func: ``Function``
