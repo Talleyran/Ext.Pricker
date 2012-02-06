@@ -116,12 +116,12 @@ GeoExt.Pricker = (function() {
         /** private: config[handler]
          *  ``GeoExt.PrickerParser``
          */
-        this.prickerParser = new GeoExt.PrickerParser(options.aliaseUrl, options.nameTitleAlias)
+        this.prickerParser = new GeoExt.PrickerParser(options.aliaseUrl)
 
         this.prickerParser.doOnParce(this.showChart, this)
         this.handler.draw = function(){}
 
-        this.typeStoreData = [ {id:"line", name:"Line" }, {id:"area", name:"Area" }, {id:"column", name:"Column" } ]
+        this.typeStoreData = [ {id:"line", name: this.lineType }, {id:"area", name: this.areaType }, {id:"column",name: this.columnType } ]
 
         this.chartField1 = null
         this.chartField2 = null
@@ -133,13 +133,30 @@ GeoExt.Pricker = (function() {
         this.lastQueryParams = {}
 
 
-        //TODO
-        //var style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-        //style_mark.externalGraphic = "img/mark.png";
-        //this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
-        //this.mark = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0),null,style_mark)
+        /** private: config[style_mark]
+         *  ``Object``
+         */
+        this.style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+        this.style_mark.externalGraphic = "img/mark.png";
+
+        /** private: config[vectorLayer]
+         *  ``OpenLayers.Layer.Vector``
+         */
+        this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
+
+        /** private: config[mark]
+         *  ``OpenLayers.Feature``
+         */
+        this.mark = null
 
     }
+
+    // Begin i18n
+    Pricker.prototype.lineType = 'Line'
+    Pricker.prototype.columnType = 'Column'
+    Pricker.prototype.areaType = 'Area'
+    // End i18n.
+
 
     /** private: method[setStores]
      *  ``Object``
@@ -166,12 +183,12 @@ GeoExt.Pricker = (function() {
     Pricker.prototype.showChart = function(json) {
         this.setStores(json)
 
-        if ( this.prickerWindow && !this.prickerWindow.isVisible() ) this.prickerWindow.destroy()
 
-        if ( !this.prickerWindow || !this.prickerWindow.isVisible() ) this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow', Ext4.Object.merge({
-                pricker: this
-            },this.chartOptions))
-        else this.prickerWindow.setChart()
+        if ( !this.prickerWindow ) {
+          this.prickerWindow = new Ext4.create('GeoExt.PrickerWindow', Ext4.Object.merge({ pricker: this },this.chartOptions)) 
+        } else { 
+          this.prickerWindow.setChart()
+        }
 
         this.prickerWindow.show()
 
@@ -182,6 +199,7 @@ GeoExt.Pricker = (function() {
      */
     Pricker.prototype.activate = function() {
         this.handler.activate()
+        this.vectorLayer.setVisibility(true)
         return this.events.triggerEvent("activate");
     }
 
@@ -191,6 +209,8 @@ GeoExt.Pricker = (function() {
      */
     Pricker.prototype.deactivate = function() {
         this.handler.deactivate()
+        this.vectorLayer.setVisibility(false)
+        this.vectorLayer.destroyFeatures()
         return this.events.triggerEvent("deactivate");
     }
 
@@ -201,6 +221,11 @@ GeoExt.Pricker = (function() {
       if(this.map) this.map.removeControl(this.handler)
       this.map = new_map
       this.map.addControl(this.handler)
+
+
+      this.map.addLayer(this.vectorLayer)
+
+
     }
 
     /** api: method[draw]
@@ -227,6 +252,17 @@ GeoExt.Pricker = (function() {
      *  Prepeare parametrs for prickQuery
      */
     Pricker.prototype.prick = function(e) {
+
+            this.map.setLayerIndex(this.vectorLayer, this.map.layers.length)
+            this.vectorLayer.destroyFeatures()
+
+            var lonlat = this.map.getLonLatFromPixel(e.xy)
+            var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)
+            this.mark = new OpenLayers.Feature.Vector( point
+              //,{some:'data'}
+              //,{externalGraphic: '/img/marker.png', graphicHeight: 21, graphicWidth: 16}
+            )
+            this.vectorLayer.addFeatures(this.mark)
 
             var params = {
                     REQUEST: "GetFeatureInfo"
@@ -296,7 +332,6 @@ GeoExt.Pricker = (function() {
                                           )
                                   }
                           }
-                      ,
                   })
           },this)
       }
