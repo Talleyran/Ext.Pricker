@@ -227,6 +227,7 @@ Ext4.define('GeoExt.PrickerWindow', {
               title: this.addLayerWinTitle,
               height: 100,
               width: 210,
+              closeAction: 'hide',
               items: [
                   {
                       xtype: 'textfield',
