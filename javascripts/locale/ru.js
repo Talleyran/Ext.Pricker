@@ -16,3 +16,6 @@ GeoExt.PrickerWindow.prototype.saveText = 'Сохранить'
 GeoExt.PrickerWindow.prototype.addLayerWinTitle = 'Добавление слоя'
 GeoExt.PrickerWindow.prototype.canselText = 'Отмена'
 GeoExt.PrickerWindow.prototype.okText = 'Ok'
+
+gxp.plugins.PrickerTool.prototype.tooltip = 'Pricker'
+gxp.plugins.PrickerTool.prototype.menuText = 'Pricker'
