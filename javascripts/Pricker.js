@@ -259,10 +259,22 @@ GeoExt.Pricker = (function() {
             var lonlat = this.map.getLonLatFromPixel(e.xy)
             var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)
             this.mark = new OpenLayers.Feature.Vector( point
-              //,{some:'data'}
-              //,{externalGraphic: '/img/marker.png', graphicHeight: 21, graphicWidth: 16}
+              ,{some:'data'}
+              ,{externalGraphic: '/externals/gispro/pricker/images/pricker.png'
+              ,graphicHeight: 24
+              ,graphicWidth: 24
+              ,graphicXOffset: -9
+              ,graphicYOffset: -22}
             )
+
             this.vectorLayer.addFeatures(this.mark)
+
+            var _self = this
+            ,markEl = document.getElementById(this.mark.geometry.id)
+            markEl.onclick = function(e){
+              _self.prickerWindow.show()
+              e.stopPropagation()
+            }
 
             var params = {
                     REQUEST: "GetFeatureInfo"
