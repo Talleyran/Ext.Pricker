@@ -106,7 +106,8 @@ gxp.plugins.PrickerTool = Ext.extend(gxp.plugins.Tool, {
             iconCls: "gxp-icon-pricker",
             tooltip: this.tooltip,
             control: pricker,
-            enableToggle: true
+            enableToggle: true,
+            toggleGroup: this.toggleGroup
         })];
         return gxp.plugins.PrickerTool.superclass.addActions.apply(this, [actions]);
     }
