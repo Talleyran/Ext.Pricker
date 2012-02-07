@@ -149,7 +149,7 @@ Ext4.define('GeoExt.PrickerWindow', {
                 ],
                 //plugins: [this.editing],
                 id: 'layer_grid',
-                width: 200,
+                width: 250,
                 //frame: true,
                 store: Ext4.create('Ext.data.Store', { fields: ['name', 'layer' ] }),
                 dockedItems: [{
@@ -453,19 +453,19 @@ Ext4.define('GeoExt.PrickerWindow', {
      *  Return options for initialize Chart
      */
     ,chartOptions: function(type,field1,field2) {
-            var themeColor = 'Red'
-            if (type == 'area') themeColor = 'Blue'
-            if (type == 'column') themeColor = 'Sky'
-            return {
-                    id: 'chart'
-                    ,flex: 1
-                    ,theme: themeColor
-                    ,animate: true
-                    ,style: 'background:#fff'
-                    ,store: this.chartStore
-                    ,axes: this.chartAxes(type,field1,field2)
-                    ,series: this.chartSeries(type,field1,field2)
-                }
+            var common = {
+                id: 'chart'
+                ,flex: 1
+                ,animate: true
+                ,style: 'background:#fff'
+                ,store: this.chartStore
+                ,axes: this.chartAxes(type,field1,field2)
+                ,series: this.chartSeries(type,field1,field2)
+            }
+            if (type == 'line') common.theme = 'Red'
+            if (type == 'area') common.theme = 'Blue'
+            if (type == 'column') common.theme = 'Sky'
+            return common
         }
 
     /** api: method[setChart]
