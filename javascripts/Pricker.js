@@ -136,13 +136,14 @@ GeoExt.Pricker = (function() {
         /** private: config[style_mark]
          *  ``Object``
          */
-        this.style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-        this.style_mark.externalGraphic = "img/mark.png";
+        //TODO
+        //this.style_mark = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+        //this.style_mark.externalGraphic = "img/mark.png";
 
         /** private: config[vectorLayer]
          *  ``OpenLayers.Layer.Vector``
          */
-        this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker")
+        this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker", {displayInLayerSwitcher: false})
 
         /** private: config[mark]
          *  ``OpenLayers.Feature``
@@ -260,7 +261,7 @@ GeoExt.Pricker = (function() {
             var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)
             this.mark = new OpenLayers.Feature.Vector( point
               ,{some:'data'}
-              ,{externalGraphic: '/externals/gispro/pricker/images/pricker.png'
+              ,{externalGraphic: 'externals/gispro/pricker/images/pricker.png'
               ,graphicHeight: 24
               ,graphicWidth: 24
               ,graphicXOffset: -9
