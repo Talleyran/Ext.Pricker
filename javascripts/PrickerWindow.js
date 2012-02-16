@@ -370,10 +370,11 @@ Ext4.define('GeoExt.PrickerWindow', {
                     ,title: title1
                     ,grid: true
                     ,label: {
-                            rotate: {
-                                    degrees: -20
-                                }
-                        }
+                        font: '10px Arial'
+                        //rotate: {
+                                //degrees: -20
+                            //}
+                      }
                 }
                 ,{
                      type: axisType2
