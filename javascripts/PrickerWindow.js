@@ -368,7 +368,6 @@ Ext4.define('GeoExt.PrickerWindow', {
                     ,position: 'bottom'
                     ,fields: [field1]
                     ,title: title1
-                    ,grid: true
                     ,label: {
                         font: '10px Arial'
                         //rotate: {
@@ -380,7 +379,14 @@ Ext4.define('GeoExt.PrickerWindow', {
                      type: axisType2
                     //,minimum: sorted_values[0]
                     //,maximum: sorted_values[sorted_values.length - 1]
-                    ,grid: true
+                    ,grid: {
+                        odd: {
+                            opacity: 1,
+                            fill: '#ddd',
+                            stroke: '#bbb',
+                            'stroke-width': 0.5
+                        }
+                    }
                     ,position: 'left'
                     ,fields: [field2]
                     ,title: title2
