@@ -143,7 +143,7 @@ GeoExt.Pricker = (function() {
         /** private: config[vectorLayer]
          *  ``OpenLayers.Layer.Vector``
          */
-        this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker", {displayInLayerSwitcher: false})
+        this.vectorLayer = new OpenLayers.Layer.Vector("Pricker marker", { displayInLayerSwitcher: false, visibility: false, isBaseLayer: false })
 
         /** private: config[mark]
          *  ``OpenLayers.Feature``
@@ -254,7 +254,11 @@ GeoExt.Pricker = (function() {
      */
     Pricker.prototype.prick = function(e) {
 
+            //TODO get the reason why baseLayer changing
+            var baseLayer = this.map.baseLayer
             this.map.setLayerIndex(this.vectorLayer, this.map.layers.length)
+            this.map.setBaseLayer(baseLayer)
+
             this.vectorLayer.destroyFeatures()
 
             var lonlat = this.map.getLonLatFromPixel(e.xy)
