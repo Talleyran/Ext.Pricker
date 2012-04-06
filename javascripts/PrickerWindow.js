@@ -414,7 +414,7 @@ Ext4.define('GeoExt.PrickerWindow', {
             if (type == 'line' ) {
               common.smooth = 3
               common.label = {
-                field: field2,
+                field: field2
               }
               common.highlight = true
               common.tips = { 
@@ -439,7 +439,7 @@ Ext4.define('GeoExt.PrickerWindow', {
             if (type == 'area' ) {
               common.style = { opacity: 0.5 }
               common.label = {
-                field: field2,
+                field: field2
               }
               common.tips = {
                 trackMouse: true,
