@@ -254,10 +254,7 @@ GeoExt.Pricker = (function() {
      */
     Pricker.prototype.prick = function(e) {
 
-            //TODO get the reason why baseLayer changing
-            var baseLayer = this.map.baseLayer
-            this.map.setLayerIndex(this.vectorLayer, this.map.layers.length)
-            this.map.setBaseLayer(baseLayer)
+            this.map.raiseLayer(this.vectorLayer, this.map.layers.length)
 
             this.vectorLayer.destroyFeatures()
 
@@ -319,6 +316,8 @@ GeoExt.Pricker = (function() {
       var responds = []
           ,failRespondCount = 0
 
+      //if (config.authUrl.slice(0,7) == 'http://' && config.authUrl.slice(7,config.authUrl.length - 7).split('/')[0] != window.location.host) authProxy = config.proxy
+      //authUrl = authProxy + config.authUrl + 'usernamePasswordLogin.do?josso_cmd=login&josso_back_to=&josso_username='+config.username+'&josso_password='+config.password
       Ext4.Array.each(this.layersStoreData, function(el,i){
               params.QUERY_LAYERS = el.name
               params.LAYERS = el.name
