@@ -64,12 +64,13 @@ GeoExt.PrickerParser = (function() {
 
         fieldsXData.push({id:'name', name: this.nameTitleAlias})
 
+        var fieldsSetted = false
         Ext4.Array.each(responds,function(respond,i){
                 var t = respond.split("--------------------------------------------\n")
 
                 //server can return enything...
                 if(t[1]){
-
+                  
                   var h = { name: t[0].split("'")[1] }
                   var tt = t[1].split("\n")
                   for(var j = 0; j<tt.length; j+=1) {
@@ -78,14 +79,14 @@ GeoExt.PrickerParser = (function() {
                       var key = params[0].toUpperCase()
                       if (/^\-*\d+\.\d+$/.test(params[1])) {
                               value = parseFloat(params[1])
-                              if (i==0){
+                              if (!fieldsSetted){
                                       fieldsY.push(key)
                                       fieldsAxisType[key] = 'Numeric'
                                   }
                           }
                       else if (/^\-*\d+$/.test(params[1])) {
                               value = parseInt(params[1])
-                              if (i==0){
+                              if (!fieldsSetted){
                                       fieldsY.push(key)
                                       fieldsAxisType[key] = 'Numeric'
                                   }
@@ -93,7 +94,7 @@ GeoExt.PrickerParser = (function() {
                       else if (/^\d+\-\d+\-\d+\-*\d\s\d+:\d+$/.test(params[1])) { 
                               //value = Date.parseDate(params[1],"Y-m-d H:i") 
                               value = params[1]
-                              if (i==0){
+                              if (!fieldsSetted){
                                       fieldsX.push(key)
                                       fieldsAxisType[key] = 'Category' //TODO Time
                                   }
@@ -104,13 +105,12 @@ GeoExt.PrickerParser = (function() {
                   }
 
                   data.push(h)
-
+                  fieldsSetted == true
                 }
 
             })
 
         allFields = Ext4.Array.union(fieldsX, fieldsY)
-
 
         Ext4.Ajax.request({
                  method: 'get'
