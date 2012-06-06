@@ -63,6 +63,7 @@ Ext4.define('GeoExt.PrickerWindow', {
     ,addLayerWinTitle: 'Add layer'
     ,canselText: 'Cancel'
     ,okText: 'Ok'
+    ,layerName: 'Name'
     // End i18n.
 
     ,renderTo: Ext4.getBody()
@@ -85,7 +86,7 @@ Ext4.define('GeoExt.PrickerWindow', {
     /** api: config[chartType]
      *  ``String`` Default chart type.
      */
-    ,chartType: 'area'
+    ,chartType: 'line'
 
     ,closeAction: 'hide'
 
@@ -179,7 +180,7 @@ Ext4.define('GeoExt.PrickerWindow', {
                     ]
                 }],
                 columns: [{
-                    text: 'Name',
+                    text: this.layerName,
                     flex: 1,
                     sortable: true,
                     dataIndex: 'name'
@@ -304,7 +305,7 @@ Ext4.define('GeoExt.PrickerWindow', {
         else if(!this.chartField1) this.chartField1 = this.pricker.fieldXStoreData[0].id
 
         if(this.pricker.chartField2) { this.chartField2 = this.pricker.chartField2; this.pricker.chartField2=null }
-        else if(!this.chartField2) this.chartField2 = this.pricker.fieldYStoreData[0].id
+        else if(!this.chartField2) this.chartField2 = this.pricker.fieldYStoreData[9].id
 
         if(this.pricker.chartType) { this.chartType = this.pricker.chartType; this.pricker.chartType=null }
         else if(!this.chartType) this.chartType = this.pricker.typeStoreData[0].id
