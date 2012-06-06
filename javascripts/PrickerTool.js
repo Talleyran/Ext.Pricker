@@ -98,6 +98,7 @@ gxp.plugins.PrickerTool = Ext.extend(gxp.plugins.Tool, {
              ,aliaseUrl: this.aliaseUrl
              ,nameTitleAlias: this.nameTitleAlias
              ,chartOptions: this.chartOptions
+             ,target: this.target
         })
         this.target.mapPanel.map.addControl(pricker)
 
