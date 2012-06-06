@@ -113,10 +113,15 @@ GeoExt.Pricker = (function() {
         this.handler = new OpenLayers.Handler.Click( this, { 'click': this.prick }, handlerOptions)
 
 
-        /** private: config[handler]
+        /** private: config[prickerParser]
          *  ``GeoExt.PrickerParser``
          */
         this.prickerParser = new GeoExt.PrickerParser(options.aliaseUrl)
+
+        /** api: config[target]
+         *  ``gxp.Composer``
+         */
+        this.target = options.target
 
         this.prickerParser.doOnParce(this.showChart, this)
         this.handler.draw = function(){}
@@ -321,34 +326,82 @@ GeoExt.Pricker = (function() {
       Ext4.Array.each(this.layersStoreData, function(el,i){
               params.QUERY_LAYERS = el.name
               params.LAYERS = el.name
-              Ext4.Ajax.request({
-                       method: 'post'
-                      ,url: this.getInfoUrl
-                      ,params: params
-                      ,scope: this
-                      ,success: function(respond){
-                              responds.push(respond)
-                              if(responds.length == this.layersStoreData.length - failRespondCount){
-                                      this.prickerParser.parse(
-                                              Ext4.Array.sort(responds,function(a,b){
-                                                      return a.requestId > b.requestId
-                                                  })
-                                              .map(function(em){return em.responseText})
-                                          )
-                                  }
-                          }
-                      ,failure: function(er){
-                              failRespondCount += 1
-                              if(responds.length == this.layersStoreData.length - failRespondCount){
-                                      this.prickerParser.parse(
-                                              Ext4.Array.sort(responds,function(a,b){
-                                                      return a.requestId > b.requestId
-                                                  })
-                                              .map(function(em){return em.responseText})
-                                          )
-                                  }
-                          }
-                  })
+
+              var r = OpenLayers.Request.POST({
+                  url: this.getInfoUrl,
+                  data: OpenLayers.Util.getParameterString(params),
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+                  },
+                  callback: function(respond){
+                    if(respond.status == 200){
+
+
+                        responds.push(respond)
+                        if(responds.length == this.layersStoreData.length - failRespondCount){
+                                this.prickerParser.parse(
+                                        Ext4.Array.sort(responds,function(a,b){
+                                                return a.requestId > b.requestId
+                                            })
+                                        .map(function(em){return em.responseText})
+                                    )
+                            }
+
+
+                    }else{
+
+
+                        failRespondCount += 1
+                        if(responds.length == this.layersStoreData.length - failRespondCount){
+                                this.prickerParser.parse(
+                                        Ext4.Array.sort(responds,function(a,b){
+                                                return a.requestId > b.requestId
+                                            })
+                                        .map(function(em){return em.responseText})
+                                    )
+                            }
+
+
+                    }
+                  },
+                  scope: this,
+                  proxy: this.target.proxy
+              })
+              r.requestId = i
+
+
+
+              //Ext4.Ajax.request({
+                       //method: 'post'
+                      //,url: this.getInfoUrl
+                      //,params: params
+                      //,scope: this
+                      //,success: function(respond){
+                              //responds.push(respond)
+                              //if(responds.length == this.layersStoreData.length - failRespondCount){
+                                      //this.prickerParser.parse(
+                                              //Ext4.Array.sort(responds,function(a,b){
+                                                      //return a.requestId > b.requestId
+                                                  //})
+                                              //.map(function(em){return em.responseText})
+                                          //)
+                                  //}
+                          //}
+                      //,failure: function(er){
+                              //failRespondCount += 1
+                              //if(responds.length == this.layersStoreData.length - failRespondCount){
+                                      //this.prickerParser.parse(
+                                              //Ext4.Array.sort(responds,function(a,b){
+                                                      //return a.requestId > b.requestId
+                                                  //})
+                                              //.map(function(em){return em.responseText})
+                                          //)
+                                  //}
+                          //}
+                  //})
+
+
+
           },this)
       }
 
