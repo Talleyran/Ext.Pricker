@@ -79,6 +79,7 @@ GeoExt.PrickerParser = (function() {
                       var key = params[0].toUpperCase()
                       if (/^\-*\d+\.\d+$/.test(params[1])) {
                               value = parseFloat(params[1])
+
                               if (!fieldsSetted){
                                       fieldsY.push(key)
                                       fieldsAxisType[key] = 'Numeric'
@@ -102,10 +103,10 @@ GeoExt.PrickerParser = (function() {
                       if(value != null){
                               h[key] = value
                           }
-                  }
 
+                  }
+                  fieldsSetted = true
                   data.push(h)
-                  fieldsSetted == true
                 }
 
             })
